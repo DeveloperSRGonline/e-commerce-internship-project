@@ -1,16 +1,9 @@
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
-import { MongoDBAdapter } from "@auth/mongodb-adapter";
-import { MongoClient } from "mongodb";
 import bcrypt from "bcryptjs";
 import { connectToDB } from "@/lib/db/connect";
 import User from "@/models/User.model";
 import { loginSchema } from "@/lib/validations/user.schema";
-
-// ──────────────────────────────────────────────────────────────────────────────
-// MongoDB client for the adapter (uses native driver, not Mongoose)
-// ──────────────────────────────────────────────────────────────────────────────
-const client = new MongoClient(process.env.MONGODB_URI!);
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   secret: process.env.NEXTAUTH_SECRET,
