@@ -38,10 +38,10 @@ These rules from `project-rules.md` are not phase-specific. Check them before co
 
 ### 0.2 — Scaffold the Folder Structure
 
-- [ ] **0.2.1** Create `app/(customer)/` route group directory.
-- [ ] **0.2.2** Create `app/(admin)/admin/` directory.
-- [ ] **0.2.3** Create `app/(auth)/login/` and `app/(auth)/register/` directories.
-- [ ] **0.2.4** Create `app/api/` directory with sub-paths matching `architecture.md § 2` — specifically:
+- [x] **0.2.1** Create `app/(customer)/` route group directory.
+- [x] **0.2.2** Create `app/(admin)/admin/` directory.
+- [x] **0.2.3** Create `app/(auth)/login/` and `app/(auth)/register/` directories.
+- [x] **0.2.4** Create `app/api/` directory with sub-paths matching `architecture.md § 2` — specifically:
   - `app/api/auth/[...nextauth]/`
   - `app/api/products/`
   - `app/api/products/[slug]/`
@@ -66,11 +66,11 @@ These rules from `project-rules.md` are not phase-specific. Check them before co
   - `app/api/admin/analytics/revenue/`
   - `app/api/admin/analytics/low-stock/`
   - `app/api/admin/analytics/customer/[id]/orders/`
-- [ ] **0.2.5** Create `lib/db/`, `lib/validations/` directories.
-- [ ] **0.2.6** Create `models/` directory.
-- [ ] **0.2.7** Create `components/ui/`, `components/product/`, `components/cart/`, `components/checkout/`, `components/admin/` directories.
-- [ ] **0.2.8** Create `scripts/` directory.
-- [ ] **0.2.9** Create `types/index.ts` with an empty export — a placeholder so the import path resolves.
+- [x] **0.2.5** Create `lib/db/`, `lib/validations/` directories.
+- [x] **0.2.6** Create `models/` directory.
+- [x] **0.2.7** Create `components/ui/`, `components/product/`, `components/cart/`, `components/checkout/`, `components/admin/` directories.
+- [x] **0.2.8** Create `scripts/` directory.
+- [x] **0.2.9** Create `types/index.ts` with an empty export — a placeholder so the import path resolves.
 
 ### 0.3 — Install Dependencies
 
