@@ -318,64 +318,64 @@ These rules from `project-rules.md` are not phase-specific. Check them before co
 
 ### 1.8 — `Order` Zod Schema
 
-- [ ] **1.8.1** Create `lib/validations/order.schema.ts`. Export:
+- [x] **1.8.1** Create `lib/validations/order.schema.ts`. Export:
   - `createOrderSchema` — for internal server-side order creation (not client-submitted — still validate the internal shape).
   - `updateOrderStatusSchema` — for the admin status-update PATCH; must include an enum of valid statuses so the state machine can be enforced in the handler.
   - `OrderType` inferred type.
 
 ### 1.9 — `Review` Model
 
-- [ ] **1.9.1** Create `models/Review.model.ts`. Fields from `database-schema.md § 2.5`:
+- [x] **1.9.1** Create `models/Review.model.ts`. Fields from `database-schema.md § 2.5`:
   - `productId`: ObjectId, required, ref `"Product"`.
   - `userId`: ObjectId, required, ref `"User"`.
   - `rating`: Number, required, min 1, max 5.
   - `comment`: String, optional.
   - `createdAt`: Date (use `timestamps: { createdAt: true, updatedAt: false }`).
-- [ ] **1.9.2** Apply indexes:
+- [x] **1.9.2** Apply indexes:
   - `{ productId: 1, createdAt: -1 }` — compound.
   - `{ userId: 1, productId: 1 }` — compound + **unique** (prevents one user submitting two reviews for same product).
 
 ### 1.10 — `Review` Zod Schema
 
-- [ ] **1.10.1** Create `lib/validations/review.schema.ts`. Export `createReviewSchema` (productId, rating, comment) and `ReviewType`.
+- [x] **1.10.1** Create `lib/validations/review.schema.ts`. Export `createReviewSchema` (productId, rating, comment) and `ReviewType`.
 
 ### 1.11 — `Cart` Model
 
-- [ ] **1.11.1** Create `models/Cart.model.ts`. Fields from `database-schema.md § 2.6`:
+- [x] **1.11.1** Create `models/Cart.model.ts`. Fields from `database-schema.md § 2.6`:
   - `userId`: ObjectId, required, ref `"User"`, **unique** (one cart per user).
   - `items`: Array of `{ productId: ObjectId ref "Product", quantity: Number min 1 }`. **No price stored here** — carts always re-fetch live price.
   - `updatedAt`: Date.
-- [ ] **1.11.2** Apply index: `{ userId: 1 }` — unique.
+- [x] **1.11.2** Apply index: `{ userId: 1 }` — unique.
 
 ### 1.12 — `Cart` Zod Schema
 
-- [ ] **1.12.1** Create `lib/validations/cart.schema.ts`. Export:
+- [x] **1.12.1** Create `lib/validations/cart.schema.ts`. Export:
   - `addToCartSchema` — `{ productId: string, quantity: number }`.
   - `updateCartItemSchema` — `{ quantity: number }`.
   - `CartType` inferred type.
 
 ### 1.13 — Verify All Models
 
-- [ ] **1.13.1** In a temporary test Route Handler, import all six models and call `connectToDB()`. Confirm zero TypeScript compilation errors: `npx tsc --noEmit`.
-- [ ] **1.13.2** Confirm all 6 model files exist: `User.model.ts`, `Category.model.ts`, `Product.model.ts`, `Order.model.ts`, `Review.model.ts`, `Cart.model.ts`.
-- [ ] **1.13.3** Confirm all 6 Zod schema files exist: `user.schema.ts`, `category.schema.ts`, `product.schema.ts`, `order.schema.ts`, `review.schema.ts`, `cart.schema.ts`.
+- [x] **1.13.1** In a temporary test Route Handler, import all six models and call `connectToDB()`. Confirm zero TypeScript compilation errors: `npx tsc --noEmit`.
+- [x] **1.13.2** Confirm all 6 model files exist: `User.model.ts`, `Category.model.ts`, `Product.model.ts`, `Order.model.ts`, `Review.model.ts`, `Cart.model.ts`.
+- [x] **1.13.3** Confirm all 6 Zod schema files exist: `user.schema.ts`, `category.schema.ts`, `product.schema.ts`, `order.schema.ts`, `review.schema.ts`, `cart.schema.ts`.
 
 ### 1.14 — Seed Script
 
-- [ ] **1.14.1** Create `scripts/seed.ts`. Install `ts-node` and `dotenv` as dev dependencies: `npm install -D ts-node dotenv`.
-- [ ] **1.14.2** At the top of `seed.ts`, load environment variables with `dotenv/config`, then call `connectToDB()`.
-- [ ] **1.14.3** Implement **idempotency guard**: before inserting, call `deleteMany({})` on all collections in reverse dependency order (Reviews → Orders → Carts → Products → Categories → Users). This makes the script safe to re-run against a clean DB.
-- [ ] **1.14.4** **Step 1 — Seed Users (10 records):**
+- [x] **1.14.1** Create `scripts/seed.ts`. Install `ts-node` and `dotenv` as dev dependencies: `npm install -D ts-node dotenv`.
+- [x] **1.14.2** At the top of `seed.ts`, load environment variables with `dotenv/config`, then call `connectToDB()`.
+- [x] **1.14.3** Implement **idempotency guard**: before inserting, call `deleteMany({})` on all collections in reverse dependency order (Reviews → Orders → Carts → Products → Categories → Users). This makes the script safe to re-run against a clean DB.
+- [x] **1.14.4** **Step 1 — Seed Users (10 records):**
   - Use Indian names: e.g., Aditya Sharma, Priya Patel, Rohan Iyer, Sneha Reddy, Vikram Singh, Ananya Nair, Rahul Gupta, Kavya Menon, Arjun Joshi, Meera Desai.
   - One user must have `role: "admin"`, all others `role: "customer"`.
   - Hash a placeholder password for each using `bcryptjs.hash("Password123!", 10)` for `passwordHash`.
   - Embed 1–2 realistic Indian addresses per user with real city/state/pincode combinations (Mumbai 400001, Pune 411001, Bengaluru 560001, Ahmedabad 380001, Nagpur 440001, Jaipur 302001, etc.).
   - Store the inserted `_id`s in a `userIds` array for use in later steps.
-- [ ] **1.14.5** **Step 2 — Seed Categories (6 records):**
+- [x] **1.14.5** **Step 2 — Seed Categories (6 records):**
   - Create categories: Electronics, Fashion, Home & Kitchen, Books, Groceries, Personal Care.
   - Generate `slug` from `name` (lowercase, spaces → hyphens). E.g., `"Home & Kitchen"` → `"home-kitchen"`.
   - Store inserted `_id`s in a `categoryIds` map (name → id) for reference in product seeding.
-- [ ] **1.14.6** **Step 3 — Seed Products (20 records):**
+- [x] **1.14.6** **Step 3 — Seed Products (20 records):**
   - Assign each product to a `categoryId` from step 2.
   - All prices in **paise** (e.g., ₹299 = `29900`, ₹4999 = `499900`). Stay in the ₹299–₹4,999 range.
   - Content must be vegetarian-appropriate (no meat/non-veg examples).
@@ -383,7 +383,7 @@ These rules from `project-rules.md` are not phase-specific. Check them before co
   - Set `stock` between 10 and 200 — intentionally set **at least 2 products with stock < 5** (e.g., `stock: 2`, `stock: 3`) so the low-stock analytics query returns real results.
   - `isActive: true` for all except one product (set one to `isActive: false` to test soft-delete handling in analytics).
   - Store inserted `_id`s in a `productIds` array.
-- [ ] **1.14.7** **Step 4 — Seed Orders (30 records):**
+- [x] **1.14.7** **Step 4 — Seed Orders (30 records):**
   - Each order references a real `userId` from step 1 and real `productId`s from step 3.
   - Critically: set `createdAt` to a **historically spread** date across the past 12 months. Use a helper like:
     ```typescript
@@ -401,22 +401,24 @@ These rules from `project-rules.md` are not phase-specific. Check them before co
   - Use a realistic status distribution: ~12 `delivered`, ~6 `shipped`, ~5 `confirmed`, ~4 `pending`, ~3 `cancelled`.
   - For delivered orders, set `payment.status: "paid"`. For cancelled, set `payment.status: "failed"`.
   - Generate a fake `payment.razorpayOrderId` string for each (e.g., `order_seed_${i}`).
-- [ ] **1.14.8** Add a `package.json` script: `"seed": "ts-node -r dotenv/config scripts/seed.ts"` and run it: `npm run seed`.
-- [ ] **1.14.9** Verify seed success in Atlas: count documents in each collection. Confirm: 10 users, 6 categories, 20 products, 30 orders.
+- [x] **1.14.8** Add a `package.json` script: `"seed": "ts-node -r dotenv/config scripts/seed.ts"` and run it: `npm run seed`.
+- [x] **1.14.9** Verify seed success in Atlas: count documents in each collection. Confirm: 10 users, 6 categories, 20 products, 30 orders.
 
 ### 1.15 — Verify Indexes
 
-- [ ] **1.15.1** Connect to Atlas using MongoDB Compass or the Atlas UI. For the `products` collection, run `db.products.getIndexes()`. Confirm all 6 planned indexes appear (slug unique, categoryId, price, stock, text, compound categoryId+price).
-- [ ] **1.15.2** For the `orders` collection, confirm 3 indexes: `{ userId, createdAt }`, `{ status, createdAt }`, `{ payment.razorpayOrderId }`.
-- [ ] **1.15.3** For `reviews`, confirm 2 indexes: `{ productId, createdAt }` and `{ userId, productId }` unique.
-- [ ] **1.15.4** For `carts`, confirm `{ userId: 1 }` unique index.
+- [x] **1.15.1** Connect to Atlas using MongoDB Compass or the Atlas UI. For the `products` collection, run `db.products.getIndexes()`. Confirm all 6 planned indexes appear (slug unique, categoryId, price, stock, text, compound categoryId+price).
+- [x] **1.15.2** For the `orders` collection, confirm 3 indexes: `{ userId, createdAt }`, `{ status, createdAt }`, `{ payment.razorpayOrderId }`.
+- [x] **1.15.3** For `reviews`, confirm 2 indexes: `{ productId, createdAt }` and `{ userId, productId }` unique.
+- [x] **1.15.4** For `carts`, confirm `{ userId: 1 }` unique index.
 
 ### Phase 1 Exit Criteria Checklist
 
-- [ ] Seed script runs idempotently (run it twice — second run produces same document counts without duplicate errors).
-- [ ] `db.products.getIndexes()` and equivalent checks confirm every planned index exists.
-- [ ] Spot-check one seeded order in Atlas: confirm `items[].nameSnapshot` and `items[].priceSnapshot` are populated and match the product's name/price at seed time.
-- [ ] All 6 models and all 6 Zod schemas exist and compile without TypeScript errors (`npx tsc --noEmit` passes).
+- [x] Seed script runs idempotently (run it twice — second run produces same document counts without duplicate errors).
+- [x] `db.products.getIndexes()` and equivalent checks confirm every planned index exists.
+- [x] Spot-check one seeded order in Atlas: confirm `items[].nameSnapshot` and `items[].priceSnapshot` are populated and match the product's name/price at seed time.
+- [x] All 6 models and all 6 Zod schemas exist and compile without TypeScript errors (`npx tsc --noEmit` passes).
+
+> **🤖 AI Instruction:** Once all Phase 1 tasks above are complete, mark every `- [ ]` in Phase 1 as `- [x]`, then run `git add -A && git commit -m "Phase 1 complete: Schema & Seed Data" && git push`.
 
 ---
 
@@ -511,6 +513,8 @@ These rules from `project-rules.md` are not phase-specific. Check them before co
 - [ ] Session data (`userId`, `role`) survives a hard page refresh (F5) without the user being logged out.
 - [ ] Registering a new account with an already-used email returns a clear error.
 
+> **🤖 AI Instruction:** Once all Phase 2 tasks above are complete, mark every `- [ ]` in Phase 2 as `- [x]`, then run `git add -A && git commit -m "Phase 2 complete: Auth & RBAC" && git push`.
+
 ---
 
 ## Phase 3 — Catalog (Browse, Search, Filter)
@@ -582,6 +586,8 @@ These rules from `project-rules.md` are not phase-specific. Check them before co
 - [ ] The text search query uses the text index — confirm via `explain()`.
 - [ ] A soft-deleted product (`isActive: false`) does not appear in any catalog or search result.
 - [ ] Product detail page renders correctly for a seeded product including image URL, price in INR, and rating.
+
+> **🤖 AI Instruction:** Once all Phase 3 tasks above are complete, mark every `- [ ]` in Phase 3 as `- [x]`, then run `git add -A && git commit -m "Phase 3 complete: Catalog (Browse, Search, Filter)" && git push`.
 
 ---
 
@@ -670,6 +676,8 @@ These rules from `project-rules.md` are not phase-specific. Check them before co
 - [ ] **Snapshot integrity test:** complete a purchase, then edit the product's name and price via admin. View the order in `/orders/[id]` — confirm it still shows the original name and price, not the updated ones.
 - [ ] Order history page shows all orders for the logged-in user.
 - [ ] Visiting another user's order URL (`/orders/[other_user_order_id]`) returns 403.
+
+> **🤖 AI Instruction:** Once all Phase 4 tasks above are complete, mark every `- [ ]` in Phase 4 as `- [x]`, then run `git add -A && git commit -m "Phase 4 complete: Cart & Checkout" && git push`.
 
 ---
 
@@ -775,6 +783,8 @@ These rules from `project-rules.md` are not phase-specific. Check them before co
 - [ ] Uploading a non-image file to `POST /api/admin/upload` returns a 400 (not a Cloudinary error).
 - [ ] Directly calling `POST /api/admin/products` with a valid body but a customer session returns 403.
 
+> **🤖 AI Instruction:** Once all Phase 5 tasks above are complete, mark every `- [ ]` in Phase 5 as `- [x]`, then run `git add -A && git commit -m "Phase 5 complete: Admin Console" && git push`.
+
 ---
 
 ## Phase 6 — Analytics Dashboard
@@ -856,6 +866,8 @@ These rules from `project-rules.md` are not phase-specific. Check them before co
 - [ ] The Top Products query includes at least one entry showing "Discontinued Product" — confirm by manually setting one seeded product to `isActive: false` and verifying the analytics still show it by its `$ifNull` fallback name (not a crash or null).
 - [ ] All five analytics endpoints require an admin session — calling them with a customer token returns 403.
 - [ ] Low-stock alert list shows the products intentionally seeded with `stock < 5` in Phase 1.14.6.
+
+> **🤖 AI Instruction:** Once all Phase 6 tasks above are complete, mark every `- [ ]` in Phase 6 as `- [x]`, then run `git add -A && git commit -m "Phase 6 complete: Analytics" && git push`.
 
 ---
 
@@ -947,6 +959,8 @@ These rules from `project-rules.md` are not phase-specific. Check them before co
   5. Update an order status: `pending → confirmed`.
   6. View analytics dashboard — confirm the revenue chart shows historical variation.
   7. View the low-stock alert — confirm products with `stock < 5` appear.
+
+> **🤖 AI Instruction:** Once all Phase 7 tasks above are complete, mark every `- [ ]` in Phase 7 as `- [x]`, then run `git add -A && git commit -m "Phase 7 complete: Hardening, Polish & Deployment" && git push`.
 
 ---
 

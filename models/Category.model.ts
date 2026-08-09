@@ -33,8 +33,8 @@ const CategorySchema = new Schema<ICategory>(
   }
 );
 
-// Index on slug (unique)
-CategorySchema.index({ slug: 1 }, { unique: true });
+// Note: slug field has unique:true which automatically creates an index.
+// Additional non-unique indexes can be added here if needed.
 
 const Category: Model<ICategory> =
   mongoose.models.Category || mongoose.model<ICategory>("Category", CategorySchema);

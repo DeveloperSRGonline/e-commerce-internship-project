@@ -88,7 +88,7 @@ const ProductSchema = new Schema<IProduct>(
 );
 
 // Indexes from database-schema.md § 5
-ProductSchema.index({ slug: 1 }, { unique: true });
+// Note: slug field has unique:true which automatically creates an index.
 ProductSchema.index({ categoryId: 1 });
 ProductSchema.index({ price: 1 });
 ProductSchema.index({ stock: 1 });

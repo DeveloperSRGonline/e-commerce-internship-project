@@ -56,8 +56,7 @@ const UserSchema = new Schema<IUser>(
   }
 );
 
-// Indexes
-UserSchema.index({ email: 1 }, { unique: true });
+// Note: email has unique:true which creates an index automatically.
 UserSchema.index({ role: 1 });
 
 const User: Model<IUser> =
