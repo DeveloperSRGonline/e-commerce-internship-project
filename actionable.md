@@ -243,7 +243,7 @@ These rules from `project-rules.md` are not phase-specific. Check them before co
 
 ### 1.2 — `User` Zod Schema
 
-- [ ] **1.2.1** Create `lib/validations/user.schema.ts`. Define a Zod schema matching the User model fields. Export:
+- [x] **1.2.1** Create `lib/validations/user.schema.ts`. Define a Zod schema matching the User model fields. Export:
   - `registerSchema` — for the registration form payload (name, email, password — not passwordHash, that's server-side derived).
   - `loginSchema` — for the login form payload (email, password).
   - `addressSchema` — for the embedded address shape.
