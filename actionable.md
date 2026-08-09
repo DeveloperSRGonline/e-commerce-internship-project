@@ -74,9 +74,9 @@ These rules from `project-rules.md` are not phase-specific. Check them before co
 
 ### 0.3 — Install Dependencies
 
-- [ ] **0.3.1** Install runtime dependencies: `npm install mongoose next-auth@beta @auth/mongodb-adapter zod cloudinary razorpay bcryptjs`.
-- [ ] **0.3.2** Install type definitions: `npm install -D @types/bcryptjs`.
-- [ ] **0.3.3** Confirm `package.json` reflects all installed packages. Check for any peer-dependency warnings in the install output and resolve them before continuing.
+- [x] **0.3.1** Install runtime dependencies: `npm install mongoose next-auth@beta @auth/mongodb-adapter zod cloudinary razorpay bcryptjs`.
+- [x] **0.3.2** Install type definitions: `npm install -D @types/bcryptjs`.
+- [x] **0.3.3** Confirm `package.json` reflects all installed packages. Check for any peer-dependency warnings in the install output and resolve them before continuing.
 
 ### 0.4 — Environment Variables
 
