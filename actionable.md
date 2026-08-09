@@ -251,16 +251,16 @@ These rules from `project-rules.md` are not phase-specific. Check them before co
 
 ### 1.3 — `Category` Model
 
-- [ ] **1.3.1** Create `models/Category.model.ts`. Fields from `database-schema.md § 2.2`:
+- [x] **1.3.1** Create `models/Category.model.ts`. Fields from `database-schema.md § 2.2`:
   - `name`: String, required, unique.
   - `slug`: String, required, unique.
   - `description`: String, optional.
   - `timestamps: true`.
-- [ ] **1.3.2** Apply index: `{ slug: 1 }` — unique.
+- [x] **1.3.2** Apply index: `{ slug: 1 }` — unique.
 
 ### 1.4 — `Category` Zod Schema
 
-- [ ] **1.4.1** Create `lib/validations/category.schema.ts` with a schema matching the Category model. Export `createCategorySchema`, `updateCategorySchema`, and the inferred `CategoryType`.
+- [x] **1.4.1** Create `lib/validations/category.schema.ts` with a schema matching the Category model. Export `createCategorySchema`, `updateCategorySchema`, and the inferred `CategoryType`.
 
 ### 1.5 — `Product` Model
 
