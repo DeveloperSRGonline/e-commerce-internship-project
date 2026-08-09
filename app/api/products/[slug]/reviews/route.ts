@@ -1,6 +1,7 @@
 import { NextRequest } from "next/server";
 import { connectToDB } from "@/lib/db/connect";
 import Review from "@/models/Review.model";
+import Product from "@/models/Product.model";
 import { z } from "zod";
 
 const querySchema = z.object({
@@ -10,10 +11,10 @@ const querySchema = z.object({
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ slug: string }> }
 ) {
   try {
-    const { id } = await params; // params is a Promise in Next.js 16
+    const { slug } = await params;
     const { searchParams } = request.nextUrl;
 
     const parsed = querySchema.safeParse(Object.fromEntries(searchParams.entries()));
@@ -29,21 +30,29 @@ export async function GET(
 
     await connectToDB();
 
+    const product = await Product.findOne({ slug, isActive: true }).lean();
+    if (!product) {
+      return Response.json(
+        { success: false, error: { code: "NOT_FOUND", message: "Product not found" } },
+        { status: 404 }
+      );
+    }
+
     const [reviews, total] = await Promise.all([
-      Review.find({ productId: id })
-        .sort({ createdAt: -1 }) // Uses { productId: 1, createdAt: -1 } index
+      Review.find({ productId: product._id })
+        .sort({ createdAt: -1 })
         .skip(skip)
         .limit(limit)
-        .populate("userId", "name") // Only return name, not email
+        .populate("userId", "name")
         .lean(),
-      Review.countDocuments({ productId: id }),
+      Review.countDocuments({ productId: product._id }),
     ]);
 
     const totalPages = Math.ceil(total / limit);
 
     return Response.json({ success: true, data: { reviews, total, page, totalPages } });
   } catch (error) {
-    console.error("[GET /api/products/[id]/reviews]", error);
+    console.error("[GET /api/products/[slug]/reviews]", error);
     return Response.json(
       { success: false, error: { code: "INTERNAL_ERROR", message: "An error occurred" } },
       { status: 500 }

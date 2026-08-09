@@ -13,10 +13,9 @@ import { loginSchema } from "@/lib/validations/user.schema";
 const client = new MongoClient(process.env.MONGODB_URI!);
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
-  adapter: MongoDBAdapter(client),
+  secret: process.env.NEXTAUTH_SECRET,
   session: {
-    // Database strategy per project-context.md § 7.2: allows server-side invalidation
-    strategy: "database",
+    strategy: "jwt",
   },
   providers: [
     Credentials({
@@ -42,7 +41,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         const isValid = await bcrypt.compare(password, user.passwordHash);
         if (!isValid) return null;
 
-        // Return minimal user object — only what goes into the token/session
+        // Return minimal user object
         return {
           id: user._id.toString(),
           name: user.name,
@@ -53,14 +52,17 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     }),
   ],
   callbacks: {
-    async session({ session, user }) {
-      // user is the DB user from the adapter (database strategy)
-      if (user && session.user) {
-        // Load role from database (adapter user may not have role)
-        await connectToDB();
-        const dbUser = await User.findById(user.id).lean();
-        session.user.userId = user.id;
-        session.user.role = (dbUser?.role ?? "customer") as "customer" | "admin";
+    async jwt({ token, user }) {
+      if (user) {
+        token.userId = user.id;
+        token.role = (user as any).role ?? "customer";
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      if (token && session.user) {
+        session.user.userId = token.userId as string;
+        session.user.role = (token.role as "customer" | "admin") ?? "customer";
       }
       return session;
     },
