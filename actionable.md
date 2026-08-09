@@ -293,7 +293,7 @@ These rules from `project-rules.md` are not phase-specific. Check them before co
 
 ### 1.7 — `Order` Model
 
-- [ ] **1.7.1** Create `models/Order.model.ts`. Fields from `database-schema.md § 2.4`:
+- [x] **1.7.1** Create `models/Order.model.ts`. Fields from `database-schema.md § 2.4`:
   - `userId`: ObjectId, required, ref `"User"`.
   - `items`: Array of embedded `OrderItemSnapshot` sub-schema:
     - `productId`: ObjectId, ref `"Product"`.
@@ -311,7 +311,7 @@ These rules from `project-rules.md` are not phase-specific. Check them before co
     - `razorpayPaymentId`: String.
     - `status`: String enum `["created", "paid", "failed", "refunded"]`, default `"created"`.
   - `timestamps: true`.
-- [ ] **1.7.2** Apply all indexes:
+- [x] **1.7.2** Apply all indexes:
   - `{ userId: 1, createdAt: -1 }` — compound.
   - `{ status: 1, createdAt: -1 }` — compound.
   - `{ "payment.razorpayOrderId": 1 }` — single.
