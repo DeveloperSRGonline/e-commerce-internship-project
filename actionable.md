@@ -179,9 +179,9 @@ These rules from `project-rules.md` are not phase-specific. Check them before co
 
 ### 0.8 — Razorpay Setup
 
-- [ ] **0.8.1** Create a Razorpay account. Navigate to the **Test Mode** API keys section (not Live). Copy the Key ID and Key Secret.
-- [ ] **0.8.2** Fill in `RAZORPAY_KEY_ID`, `RAZORPAY_KEY_SECRET`, and `NEXT_PUBLIC_RAZORPAY_KEY_ID` (Key ID only — same value as `RAZORPAY_KEY_ID` but prefixed for browser access) in `.env.local`.
-- [ ] **0.8.3** Create `lib/razorpay.ts` — initialize the Razorpay client and export the signature verification utility:
+- [x] **0.8.1** Create a Razorpay account. Navigate to the **Test Mode** API keys section (not Live). Copy the Key ID and Key Secret.
+- [x] **0.8.2** Fill in `RAZORPAY_KEY_ID`, `RAZORPAY_KEY_SECRET`, and `NEXT_PUBLIC_RAZORPAY_KEY_ID` (Key ID only — same value as `RAZORPAY_KEY_ID` but prefixed for browser access) in `.env.local`.
+- [x] **0.8.3** Create `lib/razorpay.ts` — initialize the Razorpay client and export the signature verification utility:
 
   ```typescript
   // lib/razorpay.ts
@@ -207,7 +207,7 @@ These rules from `project-rules.md` are not phase-specific. Check them before co
   }
   ```
 
-- [ ] **0.8.4** Verify the test key is retrievable: `console.log(process.env.RAZORPAY_KEY_ID)` in a temporary server component, confirm it prints the key ID (not `undefined`). Remove the log after verification.
+- [x] **0.8.4** Verify the test key is retrievable: `console.log(process.env.RAZORPAY_KEY_ID)` in a temporary server component, confirm it prints the key ID (not `undefined`). Remove the log after verification.
 
 ### 0.9 — NEXTAUTH_SECRET
 
