@@ -215,11 +215,11 @@ These rules from `project-rules.md` are not phase-specific. Check them before co
 
 ### Phase 0 Exit Criteria Checklist
 
-- [ ] App boots with `npm run dev` and zero console errors.
-- [ ] `GET /api/test-db` returned `{ success: true }` proving MongoDB Atlas round-trip works.
-- [ ] A test image upload to Cloudinary completes and a CDN URL is retrievable.
-- [ ] `RAZORPAY_KEY_ID` is readable on the server side (not `undefined`).
-- [ ] `.env.local` is listed in `.gitignore` and not tracked by git (`git status` confirms it is untracked/ignored).
+- [x] App boots with `npm run dev` and zero console errors.
+- [x] `GET /api/test-db` returned `{ success: true }` proving MongoDB Atlas round-trip works.
+- [x] A test image upload to Cloudinary completes and a CDN URL is retrievable.
+- [x] `RAZORPAY_KEY_ID` is readable on the server side (not `undefined`).
+- [x] `.env.local` is listed in `.gitignore` and not tracked by git (`git status` confirms it is untracked/ignored).
 
 ---
 
