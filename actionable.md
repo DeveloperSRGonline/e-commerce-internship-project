@@ -98,14 +98,14 @@ These rules from `project-rules.md` are not phase-specific. Check them before co
 
 ### 0.5 — MongoDB Atlas Setup
 
-- [ ] **0.5.1** Create a free-tier MongoDB Atlas cluster (M0). Name it descriptively (e.g., `ecommerce-dev`).
-- [ ] **0.5.2** Create a database user with a strong password. Store the username and password — they will go into the connection string.
-- [ ] **0.5.3** Whitelist your current IP (or `0.0.0.0/0` for development convenience — restrict this before production).
-- [ ] **0.5.4** Copy the connection string from Atlas. It looks like: `mongodb+srv://<user>:<password>@cluster0.xxxxx.mongodb.net/<dbname>?retryWrites=true&w=majority`. Replace `<dbname>` with `ecommerce`. Paste as value of `MONGODB_URI` in `.env.local`.
+- [x] **0.5.1** Create a free-tier MongoDB Atlas cluster (M0). Name it descriptively (e.g., `ecommerce-dev`).
+- [x] **0.5.2** Create a database user with a strong password. Store the username and password — they will go into the connection string.
+- [x] **0.5.3** Whitelist your current IP (or `0.0.0.0/0` for development convenience — restrict this before production).
+- [x] **0.5.4** Copy the connection string from Atlas. It looks like: `mongodb+srv://<user>:<password>@cluster0.xxxxx.mongodb.net/<dbname>?retryWrites=true&w=majority`. Replace `<dbname>` with `ecommerce`. Paste as value of `MONGODB_URI` in `.env.local`.
 
 ### 0.6 — Mongoose Connection Singleton
 
-- [ ] **0.6.1** Create `lib/db/connect.ts`. Implement the **singleton pattern** — on cold start, open one Mongoose connection; on subsequent calls (Next.js hot-reload or repeated RSC renders), reuse the cached connection. The standard implementation:
+- [x] **0.6.1** Create `lib/db/connect.ts`. Implement the **singleton pattern** — on cold start, open one Mongoose connection; on subsequent calls (Next.js hot-reload or repeated RSC renders), reuse the cached connection. The standard implementation:
 
   ```typescript
   // lib/db/connect.ts
@@ -139,15 +139,15 @@ These rules from `project-rules.md` are not phase-specific. Check them before co
   }
   ```
 
-- [ ] **0.6.2** Create a test Route Handler at `app/api/test-db/route.ts` that calls `connectToDB()`, writes a document to a temporary `test` collection, reads it back, deletes it, and returns `{ success: true, message: "MongoDB connection verified" }`.
-- [ ] **0.6.3** Run `npm run dev`, visit `http://localhost:3000/api/test-db`, verify the `success: true` response in the browser. Confirm in the Atlas UI that the connection shows under "Metrics".
-- [ ] **0.6.4** Delete `app/api/test-db/` — it was a verification-only artifact.
+- [x] **0.6.2** Create a test Route Handler at `app/api/test-db/route.ts` that calls `connectToDB()`, writes a document to a temporary `test` collection, reads it back, deletes it, and returns `{ success: true, message: "MongoDB connection verified" }`.
+- [x] **0.6.3** Run `npm run dev`, visit `http://localhost:3000/api/test-db`, verify the `success: true` response in the browser. Confirm in the Atlas UI that the connection shows under "Metrics".
+- [x] **0.6.4** Delete `app/api/test-db/` — it was a verification-only artifact.
 
 ### 0.7 — Cloudinary Setup
 
-- [ ] **0.7.1** Create a Cloudinary account at `cloudinary.com`. Note the Cloud Name, API Key, and API Secret from the Dashboard.
-- [ ] **0.7.2** Fill in `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET` in `.env.local`.
-- [ ] **0.7.3** Create `lib/cloudinary.ts` — configure the Cloudinary SDK and export an `uploadImage` helper:
+- [x] **0.7.1** Create a Cloudinary account at `cloudinary.com`. Note the Cloud Name, API Key, and API Secret from the Dashboard.
+- [x] **0.7.2** Fill in `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET` in `.env.local`.
+- [x] **0.7.3** Create `lib/cloudinary.ts` — configure the Cloudinary SDK and export an `uploadImage` helper:
 
   ```typescript
   // lib/cloudinary.ts
@@ -175,7 +175,7 @@ These rules from `project-rules.md` are not phase-specific. Check them before co
   export default cloudinary;
   ```
 
-- [ ] **0.7.4** Manually verify: use the Cloudinary web UI to upload one test image. Confirm the URL format is `https://res.cloudinary.com/<cloud_name>/image/upload/...`. This confirms the account is active and the SDK config will work.
+- [x] **0.7.4** Manually verify: use the Cloudinary web UI to upload one test image. Confirm the URL format is `https://res.cloudinary.com/<cloud_name>/image/upload/...`. This confirms the account is active and the SDK config will work.
 
 ### 0.8 — Razorpay Setup
 
