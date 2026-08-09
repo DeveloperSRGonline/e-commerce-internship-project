@@ -264,7 +264,7 @@ These rules from `project-rules.md` are not phase-specific. Check them before co
 
 ### 1.5 — `Product` Model
 
-- [ ] **1.5.1** Create `models/Product.model.ts`. Fields from `database-schema.md § 2.3`:
+- [x] **1.5.1** Create `models/Product.model.ts`. Fields from `database-schema.md § 2.3`:
   - `name`: String, required.
   - `slug`: String, required, unique.
   - `description`: String, required.
@@ -276,7 +276,7 @@ These rules from `project-rules.md` are not phase-specific. Check them before co
   - `ratingAvg`: Number, default 0.
   - `ratingCount`: Number, default 0.
   - `timestamps: true`.
-- [ ] **1.5.2** Apply all indexes from `database-schema.md § 5`:
+- [x] **1.5.2** Apply all indexes from `database-schema.md § 5`:
   - `{ slug: 1 }` — unique.
   - `{ categoryId: 1 }` — single.
   - `{ price: 1 }` — single.
@@ -286,7 +286,7 @@ These rules from `project-rules.md` are not phase-specific. Check them before co
 
 ### 1.6 — `Product` Zod Schema
 
-- [ ] **1.6.1** Create `lib/validations/product.schema.ts`. Export:
+- [x] **1.6.1** Create `lib/validations/product.schema.ts`. Export:
   - `createProductSchema` — all required fields for product creation.
   - `updateProductSchema` — all fields optional (for PATCH).
   - `ProductType` inferred type.
