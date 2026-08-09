@@ -1,4 +1,5 @@
 import mongoose, { Schema, Document, Model, Types } from "mongoose";
+import "@/models/User.model";
 import { IAddress } from "./User.model";
 
 export interface IOrderItemSnapshot {

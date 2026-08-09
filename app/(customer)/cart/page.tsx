@@ -4,6 +4,8 @@ import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
+import { Minus, Plus, Trash2, ShoppingBag, ArrowRight, ShieldCheck, Loader2 } from "lucide-react";
+import Navbar from "@/components/ui/Navbar";
 
 interface CartItem {
   productId: string;
@@ -103,12 +105,11 @@ export default function CartPage() {
           amount,
           currency: "INR",
           order_id: razorpayOrderId,
-          name: "ShopIN",
-          description: "Purchase on ShopIN",
+          name: "ShopIN Pro",
+          description: "Order Checkout",
           prefill: { name: userName, email: userEmail },
-          theme: { color: "#a855f7" },
+          theme: { color: "#4f46e5" },
           handler: async (response: { razorpay_order_id: string; razorpay_payment_id: string; razorpay_signature: string }) => {
-            // Confirm payment server-side
             const confirmRes = await fetch("/api/checkout/confirm", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
@@ -144,8 +145,8 @@ export default function CartPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center">
-        <div className="text-white/50">Loading cart...</div>
+      <div className="min-h-screen bg-[#0a0a0f] text-[#a1a1aa] flex items-center justify-center">
+        <Loader2 className="w-6 h-6 text-indigo-400 animate-spin" />
       </div>
     );
   }
@@ -153,107 +154,111 @@ export default function CartPage() {
   const isEmpty = !cartData || cartData.items.length === 0;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <h1 className="text-2xl font-bold text-white mb-8">Your Cart</h1>
+    <div className="min-h-screen bg-[#0a0a0f] text-[#a1a1aa]">
+      <Navbar />
+
+      <main className="max-w-6xl mx-auto px-6 sm:px-8 py-12">
+        <div className="mb-10 border-b border-white/[0.06] pb-6">
+          <span className="text-xs font-mono text-indigo-400 uppercase tracking-widest block mb-1">BAG</span>
+          <h1 className="text-3xl font-extrabold text-[#f5f5f7] font-display">Shopping Cart</h1>
+        </div>
 
         {isEmpty ? (
-          <div className="text-center py-20">
-            <div className="w-20 h-20 bg-white/5 rounded-2xl flex items-center justify-center mx-auto mb-4">
-              <svg className="w-10 h-10 text-white/20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-              </svg>
+          <div className="glass-panel rounded-3xl p-16 text-center space-y-4">
+            <ShoppingBag className="w-12 h-12 text-white/20 mx-auto" />
+            <h2 className="text-[#f5f5f7] text-lg font-bold font-display">Your cart is empty</h2>
+            <p className="text-xs text-[#71717a] max-w-xs mx-auto">
+              Explore our curated catalog and add products to your cart.
+            </p>
+            <div className="pt-2">
+              <Link href="/products" className="btn-primary inline-flex px-6 py-3 text-xs tracking-wider uppercase">
+                Explore Catalog
+              </Link>
             </div>
-            <h2 className="text-white/60 text-lg font-medium mb-2">Your cart is empty</h2>
-            <p className="text-white/30 text-sm mb-6">Add some products to get started</p>
-            <Link
-              href="/products"
-              className="inline-flex px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold rounded-xl hover:from-purple-600 hover:to-pink-600 transition-all"
-            >
-              Browse Products
-            </Link>
           </div>
         ) : (
-          <div className="flex flex-col lg:flex-row gap-6">
-            {/* Items */}
-            <div className="flex-1 space-y-4">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            {/* Cart Items List */}
+            <div className="lg:col-span-8 space-y-4">
               {cartData?.items.map((item) => (
-                <div key={item.productId} className="bg-white/5 border border-white/10 rounded-2xl p-4 flex gap-4 items-center">
-                  {/* Image */}
-                  <div className="relative w-20 h-20 flex-shrink-0 rounded-xl overflow-hidden bg-white/10">
-                    {item.image ? (
-                      <Image src={item.image} alt={item.name} fill className="object-cover" sizes="80px" />
-                    ) : (
-                      <div className="absolute inset-0 flex items-center justify-center text-2xl">🛍️</div>
-                    )}
+                <div key={item.productId} className="glass-panel rounded-2xl p-5 flex gap-5 items-center">
+                  <div className="relative w-20 h-20 flex-shrink-0 rounded-xl overflow-hidden bg-[#14141f] border border-white/10">
+                    <Image
+                      src={item.image || `https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=1000&auto=format&fit=crop`}
+                      alt={item.name}
+                      fill
+                      className="object-cover"
+                      sizes="80px"
+                    />
                   </div>
 
-                  {/* Info */}
                   <div className="flex-1 min-w-0">
-                    <Link href={`/products/${item.slug}`} className="text-white font-medium hover:text-purple-300 transition-colors line-clamp-2">
+                    <Link href={`/products/${item.slug}`} className="text-[#f5f5f7] font-semibold text-base font-display hover:text-indigo-300 transition-colors line-clamp-1">
                       {item.name}
                     </Link>
-                    <p className="text-white/40 text-sm mt-1">₹{(item.price / 100).toLocaleString("en-IN")} each</p>
-                    {item.stock < 5 && (
-                      <p className="text-orange-400 text-xs mt-1">Only {item.stock} left</p>
-                    )}
+                    <p className="text-xs font-mono text-[#71717a] mt-1">₹{(item.price / 100).toLocaleString("en-IN")} EACH</p>
                   </div>
 
-                  {/* Quantity */}
-                  <div className="flex items-center gap-2">
-                    <div className="flex items-center bg-white/10 border border-white/20 rounded-xl overflow-hidden">
+                  {/* Quantity Controls */}
+                  <div className="flex items-center gap-3">
+                    <div className="flex items-center bg-[#14141f] border border-white/10 rounded-xl overflow-hidden">
                       <button
                         onClick={() => updateQuantity(item.productId, item.quantity - 1)}
                         disabled={updatingId === item.productId}
-                        className="px-3 py-2 text-white/60 hover:text-white disabled:opacity-50 transition-colors"
+                        className="p-2 text-[#a1a1aa] hover:text-white disabled:opacity-40 transition-colors"
                       >
-                        −
+                        <Minus className="w-3.5 h-3.5" />
                       </button>
-                      <span className="px-3 py-2 text-white min-w-[2rem] text-center text-sm">
+                      <span className="px-3 py-1 font-mono text-xs font-semibold text-[#f5f5f7]">
                         {updatingId === item.productId ? "..." : item.quantity}
                       </span>
                       <button
                         onClick={() => updateQuantity(item.productId, item.quantity + 1)}
                         disabled={updatingId === item.productId || item.quantity >= item.stock}
-                        className="px-3 py-2 text-white/60 hover:text-white disabled:opacity-50 transition-colors"
+                        className="p-2 text-[#a1a1aa] hover:text-white disabled:opacity-40 transition-colors"
                       >
-                        +
+                        <Plus className="w-3.5 h-3.5" />
                       </button>
                     </div>
+
                     <button
                       id={`remove-item-${item.productId}`}
                       onClick={() => removeItem(item.productId)}
                       disabled={updatingId === item.productId}
-                      className="p-2 text-red-400/60 hover:text-red-400 disabled:opacity-50 transition-colors"
+                      className="p-2 text-rose-400/60 hover:text-rose-400 disabled:opacity-40 transition-colors"
                     >
-                      🗑️
+                      <Trash2 className="w-4 h-4" />
                     </button>
                   </div>
 
-                  {/* Line total */}
-                  <div className="text-white font-semibold text-right min-w-[5rem]">
-                    ₹{(item.lineTotal / 100).toLocaleString("en-IN")}
+                  <div className="text-right min-w-[5rem]">
+                    <span className="text-[#f5f5f7] font-bold font-display text-base">
+                      ₹{(item.lineTotal / 100).toLocaleString("en-IN")}
+                    </span>
                   </div>
                 </div>
               ))}
             </div>
 
-            {/* Summary */}
-            <div className="lg:w-80 flex-shrink-0">
-              <div className="bg-white/5 border border-white/10 rounded-2xl p-6 sticky top-24">
-                <h2 className="text-white font-semibold text-lg mb-5">Order Summary</h2>
-                <div className="space-y-3 mb-5">
-                  <div className="flex justify-between text-sm">
-                    <span className="text-white/60">Subtotal</span>
-                    <span className="text-white">₹{(cartData.subtotal / 100).toLocaleString("en-IN")}</span>
+            {/* Order Summary Side Panel */}
+            <div className="lg:col-span-4">
+              <div className="glass-panel rounded-2xl p-6 space-y-6 sticky top-28 border border-white/[0.1]">
+                <h2 className="text-lg font-bold text-[#f5f5f7] font-display">Order Summary</h2>
+
+                <div className="space-y-3 text-xs font-mono">
+                  <div className="flex justify-between">
+                    <span className="text-[#71717a]">SUBTOTAL</span>
+                    <span className="text-[#f5f5f7]">₹{(cartData.subtotal / 100).toLocaleString("en-IN")}</span>
                   </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-white/60">GST (18%)</span>
-                    <span className="text-white">₹{(cartData.tax / 100).toLocaleString("en-IN")}</span>
+                  <div className="flex justify-between">
+                    <span className="text-[#71717a]">ESTIMATED GST (18%)</span>
+                    <span className="text-[#f5f5f7]">₹{(cartData.tax / 100).toLocaleString("en-IN")}</span>
                   </div>
-                  <div className="border-t border-white/10 pt-3 flex justify-between font-bold">
-                    <span className="text-white">Total</span>
-                    <span className="text-white text-lg">₹{(cartData.total / 100).toLocaleString("en-IN")}</span>
+                  <div className="border-t border-white/[0.06] pt-3 flex justify-between text-sm font-bold">
+                    <span className="text-[#f5f5f7] font-display">TOTAL AMOUNT</span>
+                    <span className="text-indigo-400 font-display text-base">
+                      ₹{(cartData.total / 100).toLocaleString("en-IN")}
+                    </span>
                   </div>
                 </div>
 
@@ -261,19 +266,30 @@ export default function CartPage() {
                   id="checkout-btn"
                   onClick={handleCheckout}
                   disabled={isCheckingOut}
-                  className="w-full py-4 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 disabled:opacity-60 text-white font-bold rounded-2xl shadow-lg transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98]"
+                  className="btn-primary w-full py-4 text-xs tracking-wider uppercase flex items-center justify-center gap-2"
                 >
-                  {isCheckingOut ? "Processing..." : "Proceed to Payment →"}
+                  {isCheckingOut ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      <span>Initiating Razorpay...</span>
+                    </>
+                  ) : (
+                    <>
+                      <span>Proceed to Payment</span>
+                      <ArrowRight className="w-4 h-4" />
+                    </>
+                  )}
                 </button>
 
-                <p className="text-white/30 text-xs text-center mt-3">
-                  🔒 Secured by Razorpay
-                </p>
+                <div className="flex items-center justify-center gap-2 text-[11px] font-mono text-[#71717a] pt-2">
+                  <ShieldCheck className="w-4 h-4 text-indigo-400" />
+                  <span>Secured by Razorpay</span>
+                </div>
               </div>
             </div>
           </div>
         )}
-      </div>
+      </main>
     </div>
   );
 }

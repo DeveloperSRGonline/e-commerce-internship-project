@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { ShoppingBag, Minus, Plus, Check, AlertCircle, Loader2 } from "lucide-react";
 
 export default function AddToCartButton({
   productId,
@@ -19,10 +20,8 @@ export default function AddToCartButton({
 
   if (stock === 0) {
     return (
-      <div className="flex items-center gap-3 mt-4">
-        <div className="flex-1 py-3 bg-red-500/20 border border-red-500/40 rounded-xl text-red-400 text-center font-medium">
-          Out of Stock
-        </div>
+      <div className="w-full py-3.5 bg-rose-500/10 border border-rose-500/20 rounded-xl text-rose-400 text-center text-xs font-mono font-semibold uppercase tracking-wider">
+        Product Unavailable
       </div>
     );
   }
@@ -46,8 +45,8 @@ export default function AddToCartButton({
       const data = await res.json();
 
       if (data.success) {
-        setMessage({ type: "success", text: `Added ${quantity} item(s) to cart!` });
-        setTimeout(() => setMessage(null), 3000);
+        setMessage({ type: "success", text: `Added ${quantity} item(s) to cart` });
+        setTimeout(() => setMessage(null), 3500);
       } else {
         setMessage({ type: "error", text: data.error?.message ?? "Failed to add to cart" });
       }
@@ -59,54 +58,54 @@ export default function AddToCartButton({
   }
 
   return (
-    <div className="space-y-4 mt-4">
-      {/* Quantity selector */}
-      <div className="flex items-center gap-3">
-        <label className="text-white/60 text-sm">Qty:</label>
-        <div className="flex items-center bg-white/10 border border-white/20 rounded-xl overflow-hidden">
+    <div className="space-y-4 pt-2">
+      {/* Quantity Selector */}
+      <div className="flex items-center justify-between">
+        <span className="text-xs font-mono text-[#71717a] uppercase">QUANTITY</span>
+        <div className="flex items-center bg-[#14141f] border border-white/10 rounded-xl overflow-hidden">
           <button
             id="qty-decrease-btn"
             onClick={() => setQuantity(Math.max(1, quantity - 1))}
-            className="px-3 py-2 text-white/60 hover:text-white hover:bg-white/10 transition-colors"
+            className="p-2.5 text-[#a1a1aa] hover:text-white hover:bg-white/5 transition-colors"
           >
-            −
+            <Minus className="w-3.5 h-3.5" />
           </button>
-          <span className="px-4 py-2 text-white font-semibold min-w-[2rem] text-center">{quantity}</span>
+          <span className="px-4 py-1 text-sm font-semibold font-mono text-[#f5f5f7]">{quantity}</span>
           <button
             id="qty-increase-btn"
             onClick={() => setQuantity(Math.min(stock, quantity + 1))}
-            className="px-3 py-2 text-white/60 hover:text-white hover:bg-white/10 transition-colors"
+            className="p-2.5 text-[#a1a1aa] hover:text-white hover:bg-white/5 transition-colors"
           >
-            +
+            <Plus className="w-3.5 h-3.5" />
           </button>
         </div>
-        <span className="text-white/30 text-sm">{stock} available</span>
       </div>
 
-      {/* Add to Cart button */}
+      {/* Add to Cart Button */}
       <button
         id="add-to-cart-btn"
         onClick={handleAddToCart}
         disabled={isLoading}
-        className="w-full py-4 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 disabled:opacity-60 text-white font-bold rounded-2xl shadow-lg hover:shadow-purple-500/40 transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98]"
+        className="btn-primary w-full py-4 text-xs tracking-wider uppercase flex items-center justify-center gap-2"
       >
         {isLoading ? (
-          <span className="flex items-center justify-center gap-2">
-            <svg className="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24">
-              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-            </svg>
-            Adding...
-          </span>
+          <>
+            <Loader2 className="w-4 h-4 animate-spin" />
+            <span>Adding to Cart...</span>
+          </>
         ) : (
-          "🛒 Add to Cart"
+          <>
+            <ShoppingBag className="w-4 h-4" />
+            <span>Add to Order</span>
+          </>
         )}
       </button>
 
-      {/* Feedback message */}
+      {/* Feedback Message */}
       {message && (
-        <div className={`px-4 py-3 rounded-xl text-sm text-center font-medium ${message.type === "success" ? "bg-green-500/20 text-green-400 border border-green-500/30" : "bg-red-500/20 text-red-400 border border-red-500/30"}`}>
-          {message.text}
+        <div className={`p-3 rounded-xl text-xs font-mono flex items-center justify-center gap-2 ${message.type === "success" ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" : "bg-rose-500/10 text-rose-400 border border-rose-500/20"}`}>
+          {message.type === "success" ? <Check className="w-4 h-4 flex-shrink-0" /> : <AlertCircle className="w-4 h-4 flex-shrink-0" />}
+          <span>{message.text}</span>
         </div>
       )}
     </div>

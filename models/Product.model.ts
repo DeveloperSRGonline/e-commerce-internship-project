@@ -1,4 +1,5 @@
 import mongoose, { Schema, Document, Model } from "mongoose";
+import "@/models/Category.model";
 
 export interface IProductImage {
   url: string;
