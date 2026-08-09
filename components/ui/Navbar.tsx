@@ -3,6 +3,7 @@
 import { useSession, signOut } from "next-auth/react";
 import Link from "next/link";
 import { useState } from "react";
+import { Zap, User, ShoppingBag, Layers, Shield, Menu, X, LogOut } from "lucide-react";
 
 export default function Navbar() {
   const { data: session } = useSession();
@@ -16,9 +17,7 @@ export default function Navbar() {
           <Link href="/" className="flex items-center gap-3 group">
             <div className="relative w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 via-indigo-600 to-violet-600 p-[1px] shadow-[0_0_20px_rgba(99,102,241,0.35)] group-hover:shadow-[0_0_30px_rgba(99,102,241,0.6)] transition-all">
               <div className="w-full h-full bg-[#0a0a0f] rounded-[11px] flex items-center justify-center">
-                <svg className="w-5 h-5 text-indigo-400 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
+                <Zap className="w-5 h-5 text-indigo-400 group-hover:scale-110 transition-transform" />
               </div>
             </div>
             <div className="flex flex-col">
@@ -30,54 +29,63 @@ export default function Navbar() {
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center gap-8">
-            <Link href="/products" className="text-sm font-medium text-[#a1a1aa] hover:text-[#f5f5f7] transition-colors">
+          <nav className="hidden md:flex items-center gap-8 text-xs font-mono tracking-wider uppercase">
+            <Link href="/products" className="text-[#a1a1aa] hover:text-[#f5f5f7] transition-colors">
               Catalog
             </Link>
-            <Link href="/categories" className="text-sm font-medium text-[#a1a1aa] hover:text-[#f5f5f7] transition-colors">
+            <Link href="/categories" className="text-[#a1a1aa] hover:text-[#f5f5f7] transition-colors">
               Categories
             </Link>
             {session?.user && (
               <>
-                <Link href="/cart" className="text-sm font-medium text-[#a1a1aa] hover:text-[#f5f5f7] transition-colors flex items-center gap-2">
+                <Link href="/cart" className="text-[#a1a1aa] hover:text-[#f5f5f7] transition-colors flex items-center gap-1.5">
                   <span>Cart</span>
-                  <span className="w-2 h-2 rounded-full bg-indigo-500 animate-pulse" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse" />
                 </Link>
-                <Link href="/orders" className="text-sm font-medium text-[#a1a1aa] hover:text-[#f5f5f7] transition-colors">
+                <Link href="/orders" className="text-[#a1a1aa] hover:text-[#f5f5f7] transition-colors">
                   Orders
                 </Link>
               </>
             )}
             {session?.user?.role === "admin" && (
-              <Link href="/admin" className="text-sm font-semibold text-indigo-400 hover:text-indigo-300 transition-colors flex items-center gap-1.5 bg-indigo-500/10 px-3 py-1.5 rounded-lg border border-indigo-500/20">
+              <Link href="/admin" className="text-indigo-400 hover:text-indigo-300 font-semibold transition-colors flex items-center gap-1 bg-indigo-500/10 px-3 py-1.5 rounded-xl border border-indigo-500/20">
+                <Shield className="w-3.5 h-3.5" />
                 <span>Console</span>
-                <span className="text-xs">⚡</span>
               </Link>
             )}
           </nav>
 
-          {/* User Status / Actions */}
+          {/* User Status / Profile Action */}
           <div className="hidden md:flex items-center gap-4">
             {session?.user ? (
-              <div className="flex items-center gap-4 pl-4 border-l border-white/10">
-                <div className="text-right">
-                  <p className="text-sm font-semibold text-[#f5f5f7] leading-none">{session.user.name}</p>
-                  <p className="text-[11px] font-mono text-indigo-400/80 mt-1 uppercase tracking-wider">{session.user.role}</p>
-                </div>
+              <div className="flex items-center gap-3 pl-4 border-l border-white/10">
+                <Link
+                  href="/profile"
+                  className="flex items-center gap-2.5 px-3 py-1.5 rounded-xl bg-white/[0.04] border border-white/[0.08] hover:border-indigo-500/30 hover:bg-white/[0.08] transition-all group"
+                >
+                  <div className="w-6 h-6 rounded-lg bg-indigo-500/20 text-indigo-400 font-mono text-xs flex items-center justify-center font-bold">
+                    {(session.user.name ?? "U").charAt(0).toUpperCase()}
+                  </div>
+                  <div className="text-left">
+                    <p className="text-xs font-bold text-[#f5f5f7] font-display leading-none group-hover:text-indigo-300 transition-colors">{session.user.name ?? "User"}</p>
+                  </div>
+                </Link>
+
                 <button
                   onClick={() => signOut({ callbackUrl: "/" })}
-                  className="btn-secondary px-4 py-2 text-xs"
+                  className="p-2 text-[#71717a] hover:text-rose-400 transition-colors"
+                  title="Sign Out"
                 >
-                  Sign Out
+                  <LogOut className="w-4 h-4" />
                 </button>
               </div>
             ) : (
               <div className="flex items-center gap-3">
-                <Link href="/login" className="btn-secondary px-4 py-2 text-xs">
+                <Link href="/login" className="btn-secondary px-4 py-2 text-xs font-mono uppercase tracking-wider">
                   Sign In
                 </Link>
-                <Link href="/register" className="btn-primary px-5 py-2 text-xs">
-                  Create Account
+                <Link href="/register" className="btn-primary px-5 py-2 text-xs font-mono uppercase tracking-wider">
+                  Register
                 </Link>
               </div>
             )}
@@ -88,35 +96,30 @@ export default function Navbar() {
             className="md:hidden p-2 text-[#a1a1aa] hover:text-white"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
           >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              {isMenuOpen ? (
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6 18L18 6M6 6l12 12" />
-              ) : (
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
-              )}
-            </svg>
+            {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
         </div>
 
         {/* Mobile Dropdown */}
         {isMenuOpen && (
-          <div className="md:hidden py-6 border-t border-white/10 space-y-4 animate-in fade-in slide-in-from-top-4 duration-200">
-            <Link href="/products" className="block text-[#a1a1aa] hover:text-white text-base py-1" onClick={() => setIsMenuOpen(false)}>Catalog</Link>
-            <Link href="/categories" className="block text-[#a1a1aa] hover:text-white text-base py-1" onClick={() => setIsMenuOpen(false)}>Categories</Link>
+          <div className="md:hidden py-6 border-t border-white/10 space-y-4 font-mono text-xs uppercase">
+            <Link href="/products" className="block text-[#a1a1aa] hover:text-white py-1" onClick={() => setIsMenuOpen(false)}>Catalog</Link>
+            <Link href="/categories" className="block text-[#a1a1aa] hover:text-white py-1" onClick={() => setIsMenuOpen(false)}>Categories</Link>
             {session?.user && (
               <>
-                <Link href="/cart" className="block text-[#a1a1aa] hover:text-white text-base py-1" onClick={() => setIsMenuOpen(false)}>Cart</Link>
-                <Link href="/orders" className="block text-[#a1a1aa] hover:text-white text-base py-1" onClick={() => setIsMenuOpen(false)}>Orders</Link>
+                <Link href="/profile" className="block text-indigo-400 font-semibold py-1" onClick={() => setIsMenuOpen(false)}>My Profile</Link>
+                <Link href="/cart" className="block text-[#a1a1aa] hover:text-white py-1" onClick={() => setIsMenuOpen(false)}>Cart</Link>
+                <Link href="/orders" className="block text-[#a1a1aa] hover:text-white py-1" onClick={() => setIsMenuOpen(false)}>Orders</Link>
               </>
             )}
             {session?.user?.role === "admin" && (
-              <Link href="/admin" className="block text-indigo-400 font-semibold text-base py-1" onClick={() => setIsMenuOpen(false)}>Admin Console ⚡</Link>
+              <Link href="/admin" className="block text-indigo-400 font-semibold py-1" onClick={() => setIsMenuOpen(false)}>Admin Console ⚡</Link>
             )}
             <div className="pt-4 border-t border-white/10 flex flex-col gap-3">
               {session?.user ? (
                 <button
                   onClick={() => { signOut({ callbackUrl: "/" }); setIsMenuOpen(false); }}
-                  className="btn-secondary w-full py-2.5 text-sm"
+                  className="btn-secondary w-full py-2.5 text-xs text-rose-400"
                 >
                   Sign Out ({session.user.name})
                 </button>
