@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { connectToDB } from "@/lib/db/connect";
 import Product from "@/models/Product.model";
+import Category from "@/models/Category.model";
 import Review from "@/models/Review.model";
 import Navbar from "@/components/ui/Navbar";
 import AddToCartButton from "@/components/cart/AddToCartButton";
