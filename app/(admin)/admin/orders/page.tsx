@@ -1,10 +1,11 @@
 import { connectToDB } from "@/lib/db/connect";
 import Order from "@/models/Order.model";
 import User from "@/models/User.model";
+import AdminSearchInput from "@/components/admin/AdminSearchInput";
 import AdminOrderStatusSelect from "./AdminOrderStatusSelect";
 import Link from "next/link";
 
-async function getOrders(page: number, status?: string) {
+async function getOrders(page: number, status?: string, search?: string) {
   await connectToDB();
   // Register User model for populate
   const _ = User;
@@ -12,6 +13,13 @@ async function getOrders(page: number, status?: string) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const filter: Record<string, any> = {};
   if (status) filter.status = status;
+  if (search) {
+    filter.$or = [
+      { "payment.razorpayOrderId": { $regex: search, $options: "i" } },
+      { "payment.razorpayPaymentId": { $regex: search, $options: "i" } },
+      { "items.nameSnapshot": { $regex: search, $options: "i" } },
+    ];
+  }
 
   const [orders, total] = await Promise.all([
     Order.find(filter)
@@ -27,7 +35,7 @@ async function getOrders(page: number, status?: string) {
 }
 
 interface PageProps {
-  searchParams: Promise<{ page?: string; status?: string }>;
+  searchParams: Promise<{ page?: string; status?: string; search?: string }>;
 }
 
 const STATUS_COLORS: Record<string, string> = {
@@ -41,30 +49,33 @@ const STATUS_COLORS: Record<string, string> = {
 export const metadata = { title: "Orders — Admin Console | ShopIN" };
 
 export default async function AdminOrdersPage({ searchParams }: PageProps) {
-  const { page: pageParam, status } = await searchParams;
+  const { page: pageParam, status, search } = await searchParams;
   const page = Math.max(1, parseInt(pageParam ?? "1"));
-  const { orders, total, totalPages } = await getOrders(page, status);
+  const { orders, total, totalPages } = await getOrders(page, status, search);
 
   const statuses = ["pending", "confirmed", "shipped", "delivered", "cancelled"];
 
   return (
     <div className="space-y-8">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/[0.06] pb-6">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-white/[0.06] pb-6">
         <div>
           <span className="text-xs font-mono text-indigo-400 uppercase tracking-widest block mb-1">TRANSACTIONS</span>
           <h1 className="text-3xl font-extrabold text-[#f5f5f7] font-display">Customer Orders ({total})</h1>
         </div>
 
-        {/* Status Filter Tabs */}
-        <div className="flex gap-1.5 flex-wrap">
-          <Link href="/admin/orders" className={`px-3 py-1.5 text-xs font-mono rounded-xl transition-all border ${!status ? "btn-primary" : "btn-secondary"}`}>
-            ALL
-          </Link>
-          {statuses.map((s) => (
-            <Link key={s} href={`/admin/orders?status=${s}`} className={`px-3 py-1.5 text-xs font-mono uppercase rounded-xl transition-all border ${status === s ? "btn-primary" : "btn-secondary"}`}>
-              {s}
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+          <AdminSearchInput placeholder="Search orders..." />
+          {/* Status Filter Tabs */}
+          <div className="flex gap-1.5 flex-wrap">
+            <Link href="/admin/orders" className={`px-3 py-1.5 text-xs font-mono rounded-xl transition-all border ${!status ? "btn-primary" : "btn-secondary"}`}>
+              ALL
             </Link>
-          ))}
+            {statuses.map((s) => (
+              <Link key={s} href={`/admin/orders?status=${s}`} className={`px-3 py-1.5 text-xs font-mono uppercase rounded-xl transition-all border ${status === s ? "btn-primary" : "btn-secondary"}`}>
+                {s}
+              </Link>
+            ))}
+          </div>
         </div>
       </div>
 

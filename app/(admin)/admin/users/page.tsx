@@ -1,24 +1,40 @@
 import { connectToDB } from "@/lib/db/connect";
 import User from "@/models/User.model";
+import AdminSearchInput from "@/components/admin/AdminSearchInput";
 import { Users, Shield, UserCheck } from "lucide-react";
+
+interface PageProps {
+  searchParams: Promise<{ search?: string }>;
+}
 
 export const metadata = { title: "Users — Admin Console | ShopIN" };
 
-export default async function AdminUsersPage() {
+export default async function AdminUsersPage({ searchParams }: PageProps) {
+  const { search } = await searchParams;
   await connectToDB();
 
-  const users = await User.find({})
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const filter: Record<string, any> = {};
+  if (search) {
+    filter.$or = [
+      { name: { $regex: search, $options: "i" } },
+      { email: { $regex: search, $options: "i" } },
+    ];
+  }
+
+  const users = await User.find(filter)
     .select("-passwordHash")
     .sort({ createdAt: -1 })
     .lean();
 
   return (
     <div className="space-y-8">
-      <div className="flex items-center justify-between border-b border-white/[0.06] pb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/[0.06] pb-6">
         <div>
           <span className="text-xs font-mono text-indigo-400 uppercase tracking-widest block mb-1">ACCOUNTS</span>
           <h1 className="text-3xl font-extrabold text-[#f5f5f7] font-display">Registered Users ({users.length})</h1>
         </div>
+        <AdminSearchInput placeholder="Search users by name or email..." />
       </div>
 
       <div className="glass-panel rounded-2xl border border-white/[0.08] overflow-hidden">

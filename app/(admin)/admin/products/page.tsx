@@ -2,52 +2,68 @@ import Link from "next/link";
 import { connectToDB } from "@/lib/db/connect";
 import Product from "@/models/Product.model";
 import Category from "@/models/Category.model";
+import AdminSearchInput from "@/components/admin/AdminSearchInput";
 import AdminProductActions from "./AdminProductActions";
 import { Plus, Package } from "lucide-react";
 
-async function getProducts(page: number) {
+async function getProducts(page: number, search?: string) {
   await connectToDB();
   // Register Category model
   const _ = Category;
   const limit = 20;
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const filter: Record<string, any> = {};
+  if (search) {
+    filter.$or = [
+      { name: { $regex: search, $options: "i" } },
+      { slug: { $regex: search, $options: "i" } },
+      { description: { $regex: search, $options: "i" } },
+    ];
+  }
+
   const [products, total] = await Promise.all([
-    Product.find({})
+    Product.find(filter)
       .sort({ createdAt: -1 })
       .skip((page - 1) * limit)
       .limit(limit)
       .populate("categoryId", "name slug")
       .lean(),
-    Product.countDocuments({}),
+    Product.countDocuments(filter),
   ]);
   return { products, total, totalPages: Math.ceil(total / limit) };
 }
 
 interface PageProps {
-  searchParams: Promise<{ page?: string }>;
+  searchParams: Promise<{ page?: string; search?: string }>;
 }
 
 export const metadata = { title: "Products — Admin Console | ShopIN" };
 
 export default async function AdminProductsPage({ searchParams }: PageProps) {
-  const { page: pageParam } = await searchParams;
+  const { page: pageParam, search } = await searchParams;
   const page = Math.max(1, parseInt(pageParam ?? "1"));
-  const { products, total, totalPages } = await getProducts(page);
+  const { products, total, totalPages } = await getProducts(page, search);
 
   return (
     <div className="space-y-8">
-      <div className="flex items-center justify-between border-b border-white/[0.06] pb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/[0.06] pb-6">
         <div>
           <span className="text-xs font-mono text-indigo-400 uppercase tracking-widest block mb-1">INVENTORY</span>
           <h1 className="text-3xl font-extrabold text-[#f5f5f7] font-display">Product Catalog ({total})</h1>
         </div>
-        <Link
-          href="/admin/products/new"
-          id="add-product-btn"
-          className="btn-primary px-4 py-2.5 text-xs uppercase font-mono tracking-wider flex items-center gap-2"
-        >
-          <Plus className="w-4 h-4" />
-          <span>Add New Product</span>
-        </Link>
+
+        <div className="flex items-center gap-3 w-full sm:w-auto">
+          <AdminSearchInput placeholder="Search catalog items..." />
+          <Link
+            href="/admin/products/new"
+            id="add-product-btn"
+            className="btn-primary px-4 py-2 text-xs uppercase font-mono tracking-wider flex items-center gap-2 flex-shrink-0"
+          >
+            <Plus className="w-4 h-4" />
+            <span>Add Product</span>
+          </Link>
+        </div>
       </div>
 
       <div className="glass-panel rounded-2xl border border-white/[0.08] overflow-hidden">

@@ -125,7 +125,9 @@ export default function CartPage() {
             if (confirmData.success) {
               router.push(`/orders/${confirmData.data.orderId}?success=true`);
             } else {
-              alert("Payment verification failed. Please contact support.");
+              console.error("[Razorpay Verification Error]:", confirmData);
+              const errorMsg = confirmData?.error?.message || "Payment verification failed. Please contact support.";
+              alert(`Payment Verification Issue: ${errorMsg}`);
             }
           },
           modal: {
