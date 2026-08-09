@@ -229,17 +229,17 @@ These rules from `project-rules.md` are not phase-specific. Check them before co
 
 ### 1.1 — `User` Model
 
-- [ ] **1.1.1** Create `models/User.model.ts`. Define the Mongoose schema with all fields from `database-schema.md § 2.1`:
+- [x] **1.1.1** Create `models/User.model.ts`. Define the Mongoose schema with all fields from `database-schema.md § 2.1`:
   - `name`: String, required.
   - `email`: String, required, unique, lowercase-normalized (use `lowercase: true` in Mongoose).
   - `passwordHash`: String, optional (null for OAuth users).
   - `role`: String enum `["customer", "admin"]`, default `"customer"`.
   - `addresses`: Array of embedded sub-schema with fields: `label`, `line1`, `line2` (optional), `city`, `state`, `pincode`, `isDefault`.
   - Enable Mongoose `timestamps: true` for `createdAt`/`updatedAt`.
-- [ ] **1.1.2** Apply indexes on `User`:
+- [x] **1.1.2** Apply indexes on `User`:
   - `{ email: 1 }` — unique.
   - `{ role: 1 }` — single.
-- [ ] **1.1.3** Export the model using the `mongoose.models.User || mongoose.model("User", userSchema)` guard pattern (prevents model re-registration on hot-reload in Next.js dev mode).
+- [x] **1.1.3** Export the model using the `mongoose.models.User || mongoose.model("User", userSchema)` guard pattern (prevents model re-registration on hot-reload in Next.js dev mode).
 
 ### 1.2 — `User` Zod Schema
 
