@@ -80,9 +80,9 @@ These rules from `project-rules.md` are not phase-specific. Check them before co
 
 ### 0.4 — Environment Variables
 
-- [ ] **0.4.1** Create `.env.local` in the project root. This file must **never** be committed.
-- [ ] **0.4.2** Add `.env.local` to `.gitignore` (verify it is already there from `create-next-app`, if not — add it explicitly).
-- [ ] **0.4.3** Add these variable stubs to `.env.local` (values filled in subsequent steps):
+- [x] **0.4.1** Create `.env.local` in the project root. This file must **never** be committed.
+- [x] **0.4.2** Add `.env.local` to `.gitignore` (verify it is already there from `create-next-app`, if not — add it explicitly).
+- [x] **0.4.3** Add these variable stubs to `.env.local` (values filled in subsequent steps):
   ```
   MONGODB_URI=
   NEXTAUTH_URL=http://localhost:3000
