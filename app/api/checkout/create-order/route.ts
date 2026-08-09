@@ -55,7 +55,7 @@ export async function POST() {
   const razorpayOrder = await razorpay.orders.create({
     amount: total, // Razorpay expects amount in paise
     currency: "INR",
-    receipt: `cart_${user.userId}_${Date.now()}`,
+    receipt: `rcpt_${user.userId.slice(-10)}_${Date.now().toString().slice(-8)}`,
   });
 
   // Get user data for shipping address
