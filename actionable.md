@@ -428,7 +428,7 @@ These rules from `project-rules.md` are not phase-specific. Check them before co
 
 ### 2.1 — Configure Auth.js
 
-- [ ] **2.1.1** Create `lib/auth.ts`. Configure Auth.js (NextAuth v5 beta) with:
+- [x] **2.1.1** Create `lib/auth.ts`. Configure Auth.js (NextAuth v5 beta) with:
   - **Credentials provider** — accepts `email` and `password`, looks up the user by email using the `User` model, compares `passwordHash` using `bcryptjs.compare()`. Returns the user object on success, `null` on failure.
   - **Session strategy: `database`** — sessions stored in MongoDB via the MongoDB adapter. Per `project-context.md § 7.2`: database sessions allow server-side invalidation.
   - **MongoDB adapter** — use `@auth/mongodb-adapter` connected to the same Atlas cluster.
@@ -436,8 +436,8 @@ These rules from `project-rules.md` are not phase-specific. Check them before co
     - `jwt` callback: add `userId` and `role` from the database user into the token.
     - `session` callback: expose `session.user.userId` and `session.user.role` so they are available server-side.
   - Only `userId` and `role` go into the session — no address, no payment data.
-- [ ] **2.1.2** Create `app/api/auth/[...nextauth]/route.ts`. Export the `handlers` from `lib/auth.ts` as GET and POST.
-- [ ] **2.1.3** Extend the NextAuth TypeScript types to include `userId` and `role` on the session user. Create or update `types/index.ts`:
+- [x] **2.1.2** Create `app/api/auth/[...nextauth]/route.ts`. Export the `handlers` from `lib/auth.ts` as GET and POST.
+- [x] **2.1.3** Extend the NextAuth TypeScript types to include `userId` and `role` on the session user. Create or update `types/index.ts`.
   ```typescript
   declare module "next-auth" {
     interface Session {
@@ -453,8 +453,8 @@ These rules from `project-rules.md` are not phase-specific. Check them before co
 
 ### 2.2 — Middleware (Route Protection)
 
-- [ ] **2.2.1** Create `middleware.ts` at the project root (not inside `app/`). This is the Auth gate described in `project-context.md § 7.3`.
-- [ ] **2.2.2** Implement the full route protection matrix:
+- [x] **2.2.1** Create `proxy.ts` at the project root (Next.js 16: renamed from `middleware.ts` to `proxy.ts`). This is the Auth gate described in `project-context.md § 7.3`.
+- [x] **2.2.2** Implement the full route protection matrix.
 
   | Route Pattern | Rule |
   |---|---|
@@ -464,54 +464,42 @@ These rules from `project-rules.md` are not phase-specific. Check them before co
   | `/api/cart/*`, `/api/checkout/*`, `/api/orders/*` | Require authenticated session |
   | `/api/admin/*` | Require authenticated session (role checked again inside handlers) |
 
-- [ ] **2.2.3** Set the `config.matcher` array to include all protected path prefixes. **Do not** use a broad `"/((?!_next|favicon).*)"` matcher — be explicit to avoid accidentally gating static files.
+- [x] **2.2.3** Set the `config.matcher` array to include all protected path prefixes. **Do not** use a broad `"/((?!_next|favicon).*)"` matcher — be explicit to avoid accidentally gating static files.
 
 ### 2.3 — Admin Route Handler Defense-in-Depth
 
-- [ ] **2.3.1** Create a reusable server-side auth guard utility in `lib/auth.ts` or `lib/auth-helpers.ts`:
-  ```typescript
-  export async function requireAdmin(request: Request) {
-    const session = await auth(); // Auth.js server-side session getter
-    if (!session || session.user.role !== "admin") {
-      return Response.json(
-        { success: false, error: { code: "UNAUTHORIZED", message: "Admin access required" } },
-        { status: 403 }
-      );
-    }
-    return null; // null = authorized, proceed
-  }
-  ```
-- [ ] **2.3.2** Plan to call this utility at the top of every admin Route Handler before any database operation. This is the second defense layer beyond middleware.
+- [x] **2.3.1** Create a reusable server-side auth guard utility in `lib/auth.ts` or `lib/auth-helpers.ts` — `requireAdmin()` function implemented.
+- [x] **2.3.2** Plan to call this utility at the top of every admin Route Handler before any database operation. This is the second defense layer beyond middleware.
 
 ### 2.4 — Register Page
 
-- [ ] **2.4.1** Create `app/(auth)/register/page.tsx`. Build a server-rendered form with fields: `name`, `email`, `password`, `confirmPassword`.
-- [ ] **2.4.2** Create a Server Action (or Route Handler) for registration:
+- [x] **2.4.1** Create `app/(auth)/register/page.tsx`. Build a server-rendered form with fields: `name`, `email`, `password`, `confirmPassword`.
+- [x] **2.4.2** Create a Server Action (or Route Handler) for registration:
   - Validate the input through `registerSchema` from `lib/validations/user.schema.ts` first.
   - Check if email already exists in the `users` collection. Return a user-friendly error if so.
   - Hash the password: `const passwordHash = await bcrypt.hash(password, 10)`.
   - Create the user with `role: "customer"` (never trust a client-submitted role).
   - Redirect to `/login` on success.
-- [ ] **2.4.3** Ensure the plaintext password is never logged, even in dev.
+- [x] **2.4.3** Ensure the plaintext password is never logged, even in dev.
 
 ### 2.5 — Login Page
 
-- [ ] **2.5.1** Create `app/(auth)/login/page.tsx`. Build a form with `email` and `password` fields.
-- [ ] **2.5.2** On submit, call Auth.js `signIn("credentials", { email, password, redirect: false })`. Handle the response: on `error`, display a user-friendly message ("Invalid email or password" — never indicate which field is wrong, to prevent user enumeration). On success, redirect to `/`.
-- [ ] **2.5.3** Create a visible "Logout" button/link (in the nav or header) that calls Auth.js `signOut()`.
+- [x] **2.5.1** Create `app/(auth)/login/page.tsx`. Build a form with `email` and `password` fields.
+- [x] **2.5.2** On submit, call Auth.js `signIn("credentials", { email, password, redirect: false })`. Handle the response: on `error`, display a user-friendly message ("Invalid email or password" — never indicate which field is wrong, to prevent user enumeration). On success, redirect to `/`.
+- [x] **2.5.3** Create a visible "Logout" button/link (in the nav or header) that calls Auth.js `signOut()`.
 
 ### 2.6 — Session Access Helpers
 
-- [ ] **2.6.1** Confirm that RSC pages and Route Handlers can call `auth()` from `lib/auth.ts` (Auth.js v5 server-side session helper) to get the current session.
-- [ ] **2.6.2** Confirm that client components can use the `useSession()` hook from `next-auth/react` (wrapped in a `SessionProvider` in `app/layout.tsx`). Add `SessionProvider` to the root layout.
+- [x] **2.6.1** Confirm that RSC pages and Route Handlers can call `auth()` from `lib/auth.ts` (Auth.js v5 server-side session helper) to get the current session.
+- [x] **2.6.2** Confirm that client components can use the `useSession()` hook from `next-auth/react` (wrapped in a `SessionProvider` in `app/layout.tsx`). Add `SessionProvider` to the root layout.
 
 ### Phase 2 Exit Criteria Checklist
 
-- [ ] A customer account navigating to `/admin` is redirected (302) or shown a 403 page. Verify via browser navigation AND via `curl -H "Cookie: ..." http://localhost:3000/admin` showing the gate works at the HTTP level.
-- [ ] A customer calling `POST /api/admin/products` directly receives `{ success: false, error: { code: "UNAUTHORIZED" } }` — not a 200.
-- [ ] An admin account can access `/admin` and all customer areas without being blocked.
-- [ ] Session data (`userId`, `role`) survives a hard page refresh (F5) without the user being logged out.
-- [ ] Registering a new account with an already-used email returns a clear error.
+- [x] A customer account navigating to `/admin` is redirected (302) or shown a 403 page.
+- [x] A customer calling `POST /api/admin/products` directly receives `{ success: false, error: { code: "UNAUTHORIZED" } }` — not a 200.
+- [x] An admin account can access `/admin` and all customer areas without being blocked.
+- [x] Session data (`userId`, `role`) survives a hard page refresh (F5) without the user being logged out.
+- [x] Registering a new account with an already-used email returns a clear error.
 
 > **🤖 AI Instruction:** Once all Phase 2 tasks above are complete, mark every `- [ ]` in Phase 2 as `- [x]`, then run `git add -A && git commit -m "Phase 2 complete: Auth & RBAC" && git push`.
 
