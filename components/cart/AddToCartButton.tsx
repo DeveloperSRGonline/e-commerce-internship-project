@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { ShoppingBag, Minus, Plus, Check, AlertCircle, Loader2 } from "lucide-react";
+import { useCart } from "@/components/cart/CartContext";
 
 export default function AddToCartButton({
   productId,
@@ -14,6 +15,8 @@ export default function AddToCartButton({
 }) {
   const { data: session } = useSession();
   const router = useRouter();
+  const { refreshCartCount, triggerBounce } = useCart();
+
   const [quantity, setQuantity] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
@@ -45,6 +48,10 @@ export default function AddToCartButton({
       const data = await res.json();
 
       if (data.success) {
+        // Trigger pulse/bounce animation on top navbar cart badge
+        triggerBounce();
+        await refreshCartCount();
+
         setMessage({ type: "success", text: `Added ${quantity} item(s) to cart` });
         setTimeout(() => setMessage(null), 3500);
       } else {
@@ -86,7 +93,7 @@ export default function AddToCartButton({
         id="add-to-cart-btn"
         onClick={handleAddToCart}
         disabled={isLoading}
-        className="btn-primary w-full py-4 text-xs tracking-wider uppercase flex items-center justify-center gap-2"
+        className="btn-primary w-full py-4 text-xs tracking-wider uppercase flex items-center justify-center gap-2 transform active:scale-95 transition-all"
       >
         {isLoading ? (
           <>
@@ -103,7 +110,7 @@ export default function AddToCartButton({
 
       {/* Feedback Message */}
       {message && (
-        <div className={`p-3 rounded-xl text-xs font-mono flex items-center justify-center gap-2 ${message.type === "success" ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" : "bg-rose-500/10 text-rose-400 border border-rose-500/20"}`}>
+        <div className={`p-3 rounded-xl text-xs font-mono flex items-center justify-center gap-2 animate-in fade-in duration-200 ${message.type === "success" ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" : "bg-rose-500/10 text-rose-400 border border-rose-500/20"}`}>
           {message.type === "success" ? <Check className="w-4 h-4 flex-shrink-0" /> : <AlertCircle className="w-4 h-4 flex-shrink-0" />}
           <span>{message.text}</span>
         </div>

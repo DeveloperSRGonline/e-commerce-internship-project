@@ -3,11 +3,13 @@
 import { useSession, signOut } from "next-auth/react";
 import Link from "next/link";
 import { useState } from "react";
-import { Zap, User, ShoppingBag, Layers, Shield, Menu, X, LogOut } from "lucide-react";
+import { Zap, ShoppingBag, Shield, Menu, X, LogOut } from "lucide-react";
+import { useCart } from "@/components/cart/CartContext";
 
 export default function Navbar() {
   const { data: session } = useSession();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { cartCount, isBouncing } = useCart();
 
   return (
     <header className="sticky top-0 z-50 bg-[#0a0a0f]/80 backdrop-blur-xl border-b border-white/[0.08]">
@@ -38,9 +40,21 @@ export default function Navbar() {
             </Link>
             {session?.user && (
               <>
-                <Link href="/cart" className="text-[#a1a1aa] hover:text-[#f5f5f7] transition-colors flex items-center gap-1.5">
+                <Link
+                  href="/cart"
+                  className={`relative text-[#a1a1aa] hover:text-[#f5f5f7] transition-all flex items-center gap-2 px-3 py-1.5 rounded-xl border border-transparent hover:border-white/10 ${isBouncing ? "scale-110 border-indigo-500/50 bg-indigo-500/10 text-indigo-300" : ""}`}
+                >
+                  <ShoppingBag className="w-4 h-4 text-indigo-400" />
                   <span>Cart</span>
-                  <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse" />
+                  <span
+                    className={`ml-0.5 px-2 py-0.5 rounded-full text-[10px] font-bold font-mono transition-transform duration-300 ${
+                      isBouncing
+                        ? "scale-125 bg-indigo-500 text-white shadow-[0_0_15px_rgba(99,102,241,0.8)] animate-bounce"
+                        : "bg-indigo-500/20 text-indigo-300 border border-indigo-500/30"
+                    }`}
+                  >
+                    {cartCount}
+                  </span>
                 </Link>
                 <Link href="/orders" className="text-[#a1a1aa] hover:text-[#f5f5f7] transition-colors">
                   Orders
@@ -108,7 +122,10 @@ export default function Navbar() {
             {session?.user && (
               <>
                 <Link href="/profile" className="block text-indigo-400 font-semibold py-1" onClick={() => setIsMenuOpen(false)}>My Profile</Link>
-                <Link href="/cart" className="block text-[#a1a1aa] hover:text-white py-1" onClick={() => setIsMenuOpen(false)}>Cart</Link>
+                <Link href="/cart" className="flex items-center justify-between text-[#a1a1aa] hover:text-white py-1" onClick={() => setIsMenuOpen(false)}>
+                  <span>Cart</span>
+                  <span className="px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 text-[10px]">{cartCount}</span>
+                </Link>
                 <Link href="/orders" className="block text-[#a1a1aa] hover:text-white py-1" onClick={() => setIsMenuOpen(false)}>Orders</Link>
               </>
             )}

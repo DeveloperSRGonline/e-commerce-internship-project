@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Plus_Jakarta_Sans, Outfit } from "next/font/google";
 import "./globals.css";
 import { SessionProvider } from "next-auth/react";
+import { CartProvider } from "@/components/cart/CartContext";
 
 const outfit = Outfit({
   variable: "--font-display",
@@ -28,7 +29,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     >
       <body className="min-h-full flex flex-col bg-[#0a0a0f] text-[#a1a1aa]">
         <SessionProvider>
-          {children}
+          <CartProvider>
+            {children}
+          </CartProvider>
         </SessionProvider>
       </body>
     </html>
