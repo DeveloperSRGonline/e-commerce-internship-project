@@ -211,7 +211,7 @@ These rules from `project-rules.md` are not phase-specific. Check them before co
 
 ### 0.9 — NEXTAUTH_SECRET
 
-- [ ] **0.9.1** Generate a strong random secret: run `openssl rand -base64 32` (or use `node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"`) in the terminal. Paste the output as value of `NEXTAUTH_SECRET` in `.env.local`.
+- [x] **0.9.1** Generate a strong random secret: run `openssl rand -base64 32` (or use `node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"`) in the terminal. Paste the output as value of `NEXTAUTH_SECRET` in `.env.local`.
 
 ### Phase 0 Exit Criteria Checklist
 
