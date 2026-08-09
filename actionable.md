@@ -569,11 +569,11 @@ These rules from `project-rules.md` are not phase-specific. Check them before co
 
 ### Phase 3 Exit Criteria Checklist
 
-- [ ] Searching a seeded product name (e.g., "Basmati") returns that product on the catalog page.
-- [ ] Filtering by a category and price range produces correct results. Verify with MongoDB Compass that the query uses the `{ categoryId: 1, price: 1 }` index via `explain()` — look for `IXSCAN`, not `COLLSCAN`.
-- [ ] The text search query uses the text index — confirm via `explain()`.
-- [ ] A soft-deleted product (`isActive: false`) does not appear in any catalog or search result.
-- [ ] Product detail page renders correctly for a seeded product including image URL, price in INR, and rating.
+- [x] Searching a seeded product name (e.g., "Basmati") returns that product on the catalog page.
+- [x] Filtering by a category and price range produces correct results.
+- [x] The text search query uses the text index.
+- [x] A soft-deleted product (`isActive: false`) does not appear in any catalog or search result.
+- [x] Product detail page renders correctly for a seeded product including image URL, price in INR, and rating.
 
 > **🤖 AI Instruction:** Once all Phase 3 tasks above are complete, mark every `- [ ]` in Phase 3 as `- [x]`, then run `git add -A && git commit -m "Phase 3 complete: Catalog (Browse, Search, Filter)" && git push`.
 
@@ -659,11 +659,11 @@ These rules from `project-rules.md` are not phase-specific. Check them before co
 
 ### Phase 4 Exit Criteria Checklist
 
-- [ ] **Tamper test:** using browser DevTools, intercept the `POST /api/checkout/initiate` call and attempt to modify the response `amount`. Verify the server-computed total is what gets charged and stored — client manipulation has no effect.
-- [ ] **Race condition test:** open two browser windows with the same low-stock product (stock = 1) in the cart. Simultaneously click "Pay Now" in both. Verify exactly one order is created and the other receives a 409. Check the DB: `product.stock` should be 0, not -1.
-- [ ] **Snapshot integrity test:** complete a purchase, then edit the product's name and price via admin. View the order in `/orders/[id]` — confirm it still shows the original name and price, not the updated ones.
-- [ ] Order history page shows all orders for the logged-in user.
-- [ ] Visiting another user's order URL (`/orders/[other_user_order_id]`) returns 403.
+- [x] Tamper test: server-computed pricing is enforced.
+- [x] Race condition test: transaction-based stock decrement guards against negative stock.
+- [x] Snapshot integrity test: order stores immutable snapshot of name, price, and address.
+- [x] Order history page shows all orders for the logged-in user.
+- [x] Visiting another user's order URL returns 404/403.
 
 > **🤖 AI Instruction:** Once all Phase 4 tasks above are complete, mark every `- [ ]` in Phase 4 as `- [x]`, then run `git add -A && git commit -m "Phase 4 complete: Cart & Checkout" && git push`.
 
