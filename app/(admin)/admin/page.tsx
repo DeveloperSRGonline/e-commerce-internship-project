@@ -2,6 +2,7 @@ import { connectToDB } from "@/lib/db/connect";
 import User from "@/models/User.model";
 import Product from "@/models/Product.model";
 import Order from "@/models/Order.model";
+import { IndianRupee, ShoppingBag, Users, Package, AlertTriangle, TrendingDown } from "lucide-react";
 
 async function getDashboardStats() {
   await connectToDB();
@@ -44,7 +45,7 @@ async function getDashboardStats() {
   };
 }
 
-export const metadata = { title: "Dashboard — Admin | ShopIN" };
+export const metadata = { title: "Dashboard — Admin Console | ShopIN" };
 
 export default async function AdminDashboard() {
   const {
@@ -58,64 +59,73 @@ export default async function AdminDashboard() {
   } = await getDashboardStats();
 
   const stats = [
-    { label: "Total Revenue", value: `₹${(totalRevenue / 100).toLocaleString("en-IN")}`, icon: "💰", color: "from-purple-500/20 to-purple-500/5 border-purple-500/30" },
-    { label: "Total Orders", value: totalOrders.toLocaleString(), icon: "📦", color: "from-blue-500/20 to-blue-500/5 border-blue-500/30" },
-    { label: "Customers", value: totalUsers.toLocaleString(), icon: "👥", color: "from-green-500/20 to-green-500/5 border-green-500/30" },
-    { label: "Active Products", value: totalProducts.toLocaleString(), icon: "🛍️", color: "from-pink-500/20 to-pink-500/5 border-pink-500/30" },
+    { label: "Total Revenue", value: `₹${(totalRevenue / 100).toLocaleString("en-IN")}`, icon: IndianRupee, color: "border-indigo-500/30 text-indigo-400 bg-indigo-500/10" },
+    { label: "Total Orders", value: totalOrders.toLocaleString(), icon: ShoppingBag, color: "border-blue-500/30 text-blue-400 bg-blue-500/10" },
+    { label: "Active Customers", value: totalUsers.toLocaleString(), icon: Users, color: "border-emerald-500/30 text-emerald-400 bg-emerald-500/10" },
+    { label: "Catalog Products", value: totalProducts.toLocaleString(), icon: Package, color: "border-violet-500/30 text-violet-400 bg-violet-500/10" },
   ];
 
   const STATUS_COLORS: Record<string, string> = {
-    pending: "text-yellow-400",
-    confirmed: "text-blue-400",
-    shipped: "text-purple-400",
-    delivered: "text-green-400",
-    cancelled: "text-red-400",
+    pending: "bg-amber-500/10 text-amber-400 border-amber-500/20",
+    confirmed: "bg-blue-500/10 text-blue-400 border-blue-500/20",
+    shipped: "bg-indigo-500/10 text-indigo-400 border-indigo-500/20",
+    delivered: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
+    cancelled: "bg-rose-500/10 text-rose-400 border-rose-500/20",
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       {/* Header */}
-      <div>
-        <h1 className="text-2xl font-bold text-white">Dashboard</h1>
-        <p className="text-white/40 text-sm mt-1">Welcome to the ShopIN Admin Console</p>
+      <div className="border-b border-white/[0.06] pb-6">
+        <span className="text-xs font-mono text-indigo-400 uppercase tracking-widest block mb-1">OVERVIEW</span>
+        <h1 className="text-3xl font-extrabold text-[#f5f5f7] font-display">System Dashboard</h1>
       </div>
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
-        {stats.map((stat) => (
-          <div key={stat.label} className={`bg-gradient-to-br ${stat.color} border rounded-2xl p-5`}>
-            <div className="text-3xl mb-3">{stat.icon}</div>
-            <div className="text-2xl font-bold text-white">{stat.value}</div>
-            <div className="text-white/50 text-sm mt-1">{stat.label}</div>
-          </div>
-        ))}
+        {stats.map((stat) => {
+          const Icon = stat.icon;
+          return (
+            <div key={stat.label} className="glass-panel rounded-2xl p-6 border border-white/[0.08] space-y-4">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-mono text-[#71717a] uppercase">{stat.label}</span>
+                <div className={`w-8 h-8 rounded-xl border flex items-center justify-center ${stat.color}`}>
+                  <Icon className="w-4 h-4" />
+                </div>
+              </div>
+              <div className="text-2xl font-bold text-[#f5f5f7] font-display">{stat.value}</div>
+            </div>
+          );
+        })}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Pending Orders Alert */}
         {pendingOrders > 0 && (
-          <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-2xl p-5">
-            <div className="flex items-center gap-3 mb-2">
-              <span className="text-xl">⚠️</span>
-              <h2 className="text-yellow-400 font-semibold">Pending Orders</h2>
+          <div className="glass-panel rounded-2xl p-6 border border-amber-500/30 bg-amber-500/5 space-y-2">
+            <div className="flex items-center gap-2.5 text-amber-400 font-semibold font-display text-sm">
+              <AlertTriangle className="w-4 h-4 flex-shrink-0" />
+              <span>Pending Orders Queue</span>
             </div>
-            <p className="text-yellow-400/70 text-sm">{pendingOrders} order(s) waiting for confirmation.</p>
+            <p className="text-xs text-amber-300/80 font-mono">
+              {pendingOrders} order(s) awaiting confirmation and status updates.
+            </p>
           </div>
         )}
 
         {/* Low Stock Alert */}
         {lowStockProducts.length > 0 && (
-          <div className="bg-orange-500/10 border border-orange-500/30 rounded-2xl p-5">
-            <div className="flex items-center gap-3 mb-3">
-              <span className="text-xl">📉</span>
-              <h2 className="text-orange-400 font-semibold">Low Stock Alert</h2>
+          <div className="glass-panel rounded-2xl p-6 border border-rose-500/30 bg-rose-500/5 space-y-3">
+            <div className="flex items-center gap-2.5 text-rose-400 font-semibold font-display text-sm">
+              <TrendingDown className="w-4 h-4 flex-shrink-0" />
+              <span>Inventory Depletion Warning</span>
             </div>
-            <div className="space-y-2">
+            <div className="space-y-2 font-mono text-xs">
               {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
               {lowStockProducts.map((p: any) => (
-                <div key={p._id.toString()} className="flex justify-between text-sm">
-                  <span className="text-white/60 truncate">{p.name}</span>
-                  <span className="text-orange-400 font-semibold ml-2">{p.stock} left</span>
+                <div key={p._id.toString()} className="flex justify-between items-center py-1 border-b border-white/[0.04] last:border-0">
+                  <span className="text-[#a1a1aa] truncate">{p.name}</span>
+                  <span className="text-rose-400 font-bold ml-2">{p.stock} LEFT</span>
                 </div>
               ))}
             </div>
@@ -124,33 +134,33 @@ export default async function AdminDashboard() {
       </div>
 
       {/* Recent Orders */}
-      <div className="bg-white/5 border border-white/10 rounded-2xl p-5">
-        <h2 className="text-white font-semibold mb-4">Recent Orders</h2>
+      <div className="glass-panel rounded-2xl p-6 border border-white/[0.08] space-y-4">
+        <h2 className="text-base font-bold text-[#f5f5f7] font-display">Recent Order Transactions</h2>
         {recentOrders.length === 0 ? (
-          <p className="text-white/40 text-sm">No orders yet.</p>
+          <p className="text-xs font-mono text-[#71717a]">No recent order transactions available.</p>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
+            <table className="w-full text-xs font-mono">
               <thead>
-                <tr className="text-white/40 border-b border-white/10">
-                  <th className="text-left pb-3 font-medium">Order ID</th>
-                  <th className="text-left pb-3 font-medium">Customer</th>
-                  <th className="text-left pb-3 font-medium">Status</th>
-                  <th className="text-right pb-3 font-medium">Total</th>
+                <tr className="text-[#71717a] border-b border-white/[0.06] text-left">
+                  <th className="pb-3 font-semibold uppercase">ORDER ID</th>
+                  <th className="pb-3 font-semibold uppercase">CUSTOMER</th>
+                  <th className="pb-3 font-semibold uppercase">STATUS</th>
+                  <th className="pb-3 font-semibold uppercase text-right">TOTAL</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-white/5">
+              <tbody className="divide-y divide-white/[0.04]">
                 {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                 {recentOrders.map((order: any) => (
                   <tr key={order._id.toString()}>
-                    <td className="py-3 text-white/60 font-mono">#{order._id.toString().slice(-8).toUpperCase()}</td>
-                    <td className="py-3 text-white/70">{order.userId?.name ?? "—"}</td>
+                    <td className="py-3 text-[#f5f5f7]">#{order._id.toString().slice(-8).toUpperCase()}</td>
+                    <td className="py-3 text-[#a1a1aa]">{order.userId?.name ?? "Customer"}</td>
                     <td className="py-3">
-                      <span className={`font-medium capitalize ${STATUS_COLORS[order.status] ?? "text-white/60"}`}>
+                      <span className={`inline-flex px-2 py-0.5 rounded-full text-[10px] uppercase font-semibold border ${STATUS_COLORS[order.status] ?? "bg-white/10 text-white/60"}`}>
                         {order.status}
                       </span>
                     </td>
-                    <td className="py-3 text-white font-semibold text-right">₹{(order.total / 100).toLocaleString("en-IN")}</td>
+                    <td className="py-3 text-[#f5f5f7] font-bold text-right">₹{(order.total / 100).toLocaleString("en-IN")}</td>
                   </tr>
                 ))}
               </tbody>
