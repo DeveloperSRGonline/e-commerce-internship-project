@@ -1,31 +1,32 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Plus_Jakarta_Sans, Outfit } from "next/font/google";
 import "./globals.css";
 import { SessionProvider } from "next-auth/react";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const outfit = Outfit({
+  variable: "--font-display",
   subsets: ["latin"],
+  weight: ["500", "600", "700", "800"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const jakarta = Plus_Jakarta_Sans({
+  variable: "--font-sans",
   subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
 });
 
 export const metadata: Metadata = {
-  title: "ShopIN — Indian E-Commerce Platform",
-  description: "Discover quality products with secure checkout powered by Razorpay. Browse electronics, fashion, home goods, and more.",
+  title: "ShopIN — Curated Tech & Lifestyle Essentials",
+  description: "Discover engineered products, high-grade electronics, and lifestyle goods. Fast dispatch across India with Razorpay protection.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${outfit.variable} ${jakarta.variable} h-full dark antialiased`}
     >
-      <body className="min-h-full flex flex-col">
-        {/* SessionProvider makes useSession() available to all client components */}
+      <body className="min-h-full flex flex-col bg-[#0a0a0f] text-[#a1a1aa]">
         <SessionProvider>
           {children}
         </SessionProvider>

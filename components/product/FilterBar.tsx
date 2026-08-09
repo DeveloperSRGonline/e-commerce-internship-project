@@ -34,7 +34,6 @@ export default function FilterBar({
   const updateParams = useCallback(
     (updates: Record<string, string | undefined>) => {
       const params = new URLSearchParams(searchParams.toString());
-      // Reset to page 1 on any filter change
       params.delete("page");
 
       for (const [key, value] of Object.entries(updates)) {
@@ -53,11 +52,11 @@ export default function FilterBar({
   );
 
   return (
-    <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-6 space-y-6">
+    <div className="glass-panel rounded-2xl p-6 space-y-6 border border-white/[0.08]">
       {/* Search */}
       <div>
-        <label className="block text-sm font-semibold text-white/70 mb-2 uppercase tracking-wider">
-          Search Products
+        <label className="block text-[11px] font-mono font-semibold text-indigo-400 uppercase tracking-widest mb-2">
+          Search
         </label>
         <form
           onSubmit={(e) => {
@@ -72,32 +71,32 @@ export default function FilterBar({
             name="q"
             type="text"
             defaultValue={currentQuery}
-            placeholder="Search products..."
-            className="flex-1 px-3 py-2 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/30 text-sm focus:outline-none focus:border-purple-400 focus:ring-1 focus:ring-purple-400/30 transition-all"
+            placeholder="Keyword search..."
+            className="w-full px-3.5 py-2.5 bg-[#14141f] border border-white/10 rounded-xl text-[#f5f5f7] placeholder-[#71717a] text-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/30 transition-all"
           />
           <button
             type="submit"
-            className="px-3 py-2 bg-purple-500/80 hover:bg-purple-500 rounded-xl text-white text-sm transition-colors"
+            className="btn-primary px-4 py-2 text-xs flex-shrink-0"
           >
-            🔍
+            Search
           </button>
         </form>
       </div>
 
       {/* Category */}
       <div>
-        <label htmlFor="filter-category" className="block text-sm font-semibold text-white/70 mb-2 uppercase tracking-wider">
+        <label htmlFor="filter-category" className="block text-[11px] font-mono font-semibold text-indigo-400 uppercase tracking-widest mb-2">
           Category
         </label>
         <select
           id="filter-category"
           value={currentCategory ?? ""}
           onChange={(e) => updateParams({ category: e.target.value || undefined })}
-          className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-xl text-white text-sm focus:outline-none focus:border-purple-400 transition-all cursor-pointer"
+          className="w-full px-3.5 py-2.5 bg-[#14141f] border border-white/10 rounded-xl text-[#f5f5f7] text-sm focus:outline-none focus:border-indigo-500 transition-all cursor-pointer"
         >
-          <option value="" className="bg-slate-800">All Categories</option>
+          <option value="" className="bg-[#0a0a0f]">All Collections</option>
           {categories.map((cat) => (
-            <option key={cat._id} value={cat.slug} className="bg-slate-800">
+            <option key={cat._id} value={cat.slug} className="bg-[#0a0a0f]">
               {cat.name}
             </option>
           ))}
@@ -106,7 +105,7 @@ export default function FilterBar({
 
       {/* Price Range */}
       <div>
-        <label className="block text-sm font-semibold text-white/70 mb-2 uppercase tracking-wider">
+        <label className="block text-[11px] font-mono font-semibold text-indigo-400 uppercase tracking-widest mb-2">
           Price Range (₹)
         </label>
         <div className="flex gap-2 items-center">
@@ -119,9 +118,9 @@ export default function FilterBar({
             onBlur={(e) =>
               updateParams({ minPrice: e.target.value ? String(Number(e.target.value) * 100) : undefined })
             }
-            className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/30 text-sm focus:outline-none focus:border-purple-400 transition-all"
+            className="w-full px-3 py-2 bg-[#14141f] border border-white/10 rounded-xl text-[#f5f5f7] placeholder-[#71717a] text-sm focus:outline-none focus:border-indigo-500 transition-all"
           />
-          <span className="text-white/40 flex-shrink-0">—</span>
+          <span className="text-[#71717a]">—</span>
           <input
             id="filter-max-price"
             type="number"
@@ -131,25 +130,25 @@ export default function FilterBar({
             onBlur={(e) =>
               updateParams({ maxPrice: e.target.value ? String(Number(e.target.value) * 100) : undefined })
             }
-            className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/30 text-sm focus:outline-none focus:border-purple-400 transition-all"
+            className="w-full px-3 py-2 bg-[#14141f] border border-white/10 rounded-xl text-[#f5f5f7] placeholder-[#71717a] text-sm focus:outline-none focus:border-indigo-500 transition-all"
           />
         </div>
       </div>
 
       {/* Sort */}
       <div>
-        <label htmlFor="filter-sort" className="block text-sm font-semibold text-white/70 mb-2 uppercase tracking-wider">
-          Sort By
+        <label htmlFor="filter-sort" className="block text-[11px] font-mono font-semibold text-indigo-400 uppercase tracking-widest mb-2">
+          Sort Order
         </label>
         <select
           id="filter-sort"
           value={currentSort ?? ""}
           onChange={(e) => updateParams({ sort: e.target.value || undefined })}
-          className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-xl text-white text-sm focus:outline-none focus:border-purple-400 transition-all cursor-pointer"
+          className="w-full px-3.5 py-2.5 bg-[#14141f] border border-white/10 rounded-xl text-[#f5f5f7] text-sm focus:outline-none focus:border-indigo-500 transition-all cursor-pointer"
         >
-          <option value="" className="bg-slate-800">Newest First</option>
-          <option value="price_asc" className="bg-slate-800">Price: Low to High</option>
-          <option value="price_desc" className="bg-slate-800">Price: High to Low</option>
+          <option value="" className="bg-[#0a0a0f]">Newest Arrivals</option>
+          <option value="price_asc" className="bg-[#0a0a0f]">Price: Low to High</option>
+          <option value="price_desc" className="bg-[#0a0a0f]">Price: High to Low</option>
         </select>
       </div>
 
@@ -158,9 +157,9 @@ export default function FilterBar({
         <button
           id="clear-filters-btn"
           onClick={() => router.push(pathname)}
-          className="w-full py-2 text-sm text-white/50 hover:text-white border border-white/10 hover:border-white/20 rounded-xl transition-all"
+          className="btn-secondary w-full py-2.5 text-xs text-[#a1a1aa]"
         >
-          {isPending ? "Applying..." : "✕ Clear All Filters"}
+          {isPending ? "Updating..." : "Reset Filters"}
         </button>
       )}
     </div>

@@ -16,11 +16,11 @@ interface Product {
 function StarRating({ avg, count }: { avg: number; count: number }) {
   return (
     <div className="flex items-center gap-1.5">
-      <div className="flex">
+      <div className="flex gap-0.5">
         {[1, 2, 3, 4, 5].map((star) => (
           <svg
             key={star}
-            className={`w-3.5 h-3.5 ${star <= Math.round(avg) ? "text-yellow-400" : "text-white/20"}`}
+            className={`w-3.5 h-3.5 ${star <= Math.round(avg) ? "text-indigo-400" : "text-white/10"}`}
             fill="currentColor"
             viewBox="0 0 20 20"
           >
@@ -28,7 +28,7 @@ function StarRating({ avg, count }: { avg: number; count: number }) {
           </svg>
         ))}
       </div>
-      <span className="text-white/40 text-xs">({count})</span>
+      <span className="text-[#71717a] font-mono text-[11px]">({count})</span>
     </div>
   );
 }
@@ -40,68 +40,63 @@ export default function ProductCard({ product }: { product: Product }) {
 
   return (
     <Link href={`/products/${product.slug}`} className="group block">
-      <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl overflow-hidden hover:border-purple-500/50 hover:bg-white/10 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-xl hover:shadow-purple-500/10">
-        {/* Image */}
-        <div className="relative aspect-square bg-gradient-to-br from-white/5 to-white/10 overflow-hidden">
+      <div className="glass-panel-interactive rounded-2xl overflow-hidden flex flex-col h-full border border-white/[0.08]">
+        {/* Product Visual */}
+        <div className="relative aspect-[4/3] bg-[#14141f] overflow-hidden">
           {imageUrl ? (
             <Image
               src={imageUrl}
               alt={product.name}
               fill
-              className="object-cover group-hover:scale-105 transition-transform duration-500"
+              className="object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
               sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
             />
           ) : (
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="w-16 h-16 bg-gradient-to-br from-purple-500/30 to-pink-500/30 rounded-2xl flex items-center justify-center">
-                <svg className="w-8 h-8 text-white/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-                </svg>
-              </div>
+            <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-indigo-950/20 to-slate-900/40">
+              <svg className="w-10 h-10 text-white/10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+              </svg>
             </div>
           )}
 
-          {/* Stock badge */}
-          {product.stock === 0 && (
-            <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-              <span className="bg-red-500/90 text-white text-xs font-semibold px-3 py-1 rounded-full">
-                Out of Stock
+          {/* Badges */}
+          <div className="absolute top-3 left-3 right-3 flex items-center justify-between pointer-events-none">
+            {category ? (
+              <span className="text-[10px] uppercase tracking-wider font-mono font-semibold text-indigo-300 bg-[#0a0a0f]/80 backdrop-blur-md border border-indigo-500/30 px-2 py-0.5 rounded-full">
+                {category.name}
               </span>
-            </div>
-          )}
-          {product.stock > 0 && product.stock < 5 && (
-            <div className="absolute top-2 right-2">
-              <span className="bg-orange-500/90 text-white text-xs font-semibold px-2 py-0.5 rounded-full">
-                Only {product.stock} left
+            ) : <span />}
+
+            {product.stock === 0 ? (
+              <span className="text-[10px] uppercase tracking-wider font-mono font-bold text-rose-400 bg-rose-950/80 backdrop-blur-md border border-rose-500/30 px-2.5 py-0.5 rounded-full">
+                Sold Out
               </span>
-            </div>
-          )}
+            ) : product.stock < 5 ? (
+              <span className="text-[10px] uppercase tracking-wider font-mono font-semibold text-amber-400 bg-amber-950/80 backdrop-blur-md border border-amber-500/30 px-2 py-0.5 rounded-full">
+                {product.stock} Left
+              </span>
+            ) : null}
+          </div>
         </div>
 
-        {/* Content */}
-        <div className="p-4 space-y-2">
-          {/* Category */}
-          {category && (
-            <span className="text-purple-400 text-xs font-medium uppercase tracking-wider">
-              {category.name}
-            </span>
-          )}
+        {/* Details */}
+        <div className="p-5 flex flex-col flex-1 justify-between gap-4">
+          <div className="space-y-2">
+            <h3 className="text-[#f5f5f7] font-semibold text-base leading-snug line-clamp-2 group-hover:text-indigo-300 transition-colors font-display">
+              {product.name}
+            </h3>
+            <StarRating avg={product.ratingAvg} count={product.ratingCount} />
+          </div>
 
-          {/* Name */}
-          <h3 className="text-white font-semibold text-sm leading-tight line-clamp-2 group-hover:text-purple-300 transition-colors">
-            {product.name}
-          </h3>
-
-          {/* Rating */}
-          <StarRating avg={product.ratingAvg} count={product.ratingCount} />
-
-          {/* Price */}
-          <div className="flex items-center justify-between pt-1">
-            <span className="text-xl font-bold text-white">
-              ₹{priceInRupees.toLocaleString("en-IN")}
-            </span>
-            <span className={`text-xs font-medium px-2 py-1 rounded-full ${product.stock > 0 ? "bg-green-500/20 text-green-400" : "bg-red-500/20 text-red-400"}`}>
-              {product.stock > 0 ? "In Stock" : "Sold Out"}
+          <div className="flex items-center justify-between pt-3 border-t border-white/[0.06]">
+            <div>
+              <span className="text-[11px] font-mono text-[#71717a] block leading-none mb-1">PRICE</span>
+              <span className="text-lg font-bold text-[#f5f5f7] font-display tracking-tight">
+                ₹{priceInRupees.toLocaleString("en-IN")}
+              </span>
+            </div>
+            <span className="w-8 h-8 rounded-xl bg-white/[0.04] border border-white/[0.08] flex items-center justify-center group-hover:bg-indigo-600 group-hover:border-indigo-500 text-white/50 group-hover:text-white transition-all">
+              →
             </span>
           </div>
         </div>
